@@ -48,7 +48,7 @@ public class UserController {
         return ResponseEntity.notFound().build();//
     }
 
-    @PutMapping("/update-user/{username")
+    @PutMapping("/update-user/{username}")
     public ResponseEntity<User> updateUser(@PathVariable String username, @RequestBody User userUpdates) {
         try {
             return _userRepository.findByUsername(username)
@@ -66,5 +66,4 @@ public class UserController {
             throw new RuntimeException("something is bad with updating...");
         }
     }
-
 }
