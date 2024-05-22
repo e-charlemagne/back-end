@@ -1,6 +1,5 @@
 package com.example.backend.controllers;
 
-
 import com.example.backend.entities.actors.User;
 import com.example.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +26,7 @@ public class UserController {
     }
 
     @PostMapping("/adding-user")
-    public ResponseEntity<User> addUser(@RequestBody
-                                            User user) {
+    public ResponseEntity<User> addUser(@RequestBody User user) {
         User savedUser = _userRepository.save(user);
         System.out.println("User has been added");
         return ResponseEntity.ok(savedUser);
@@ -40,7 +38,6 @@ public class UserController {
             _userRepository.deleteByUsername(username);
             System.out.println("Return 200 response if that was successfully deleted.");
             return ResponseEntity.ok().build();
-
         }
         System.out.println("Return 404 Not Found if the user doesn't exist");
         return ResponseEntity.notFound().build();//
