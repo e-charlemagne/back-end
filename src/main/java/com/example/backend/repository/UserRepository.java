@@ -1,9 +1,8 @@
 package com.example.backend.repository;
 
-import com.example.backend.actors.User;
+import com.example.backend.entities.actors.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import javax.swing.text.html.Option;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User,Integer> {

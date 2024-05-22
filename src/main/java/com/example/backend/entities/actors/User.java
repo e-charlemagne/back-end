@@ -1,4 +1,4 @@
-package com.example.backend.actors;
+package com.example.backend.entities.actors;
 
 import jakarta.persistence.*;
 import jakarta.persistence.Table;

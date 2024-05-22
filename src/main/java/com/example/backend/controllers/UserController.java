@@ -1,12 +1,10 @@
 package com.example.backend.controllers;
 
 
-import com.example.backend.actors.User;
+import com.example.backend.entities.actors.User;
 import com.example.backend.repository.UserRepository;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
