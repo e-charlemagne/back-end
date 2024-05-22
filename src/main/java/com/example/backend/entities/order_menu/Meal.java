@@ -1,7 +1,6 @@
 package com.example.backend.entities.order_menu;
 
 import jakarta.persistence.*;
-import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,12 +20,17 @@ public class Meal {
     private Long id;
 
     @NotBlank(message = "price is mandatory")
-    private int price;
+    private Integer price;
 
-    @NotBlank(message = "meal_name is also mandatory")
+    @NotBlank(message = "meal name is also mandatory")
     private String meal_name;
 
     @NotBlank(message = "meal description is also mandatory")
     private String meal_description;
+
+    @ManyToOne
+    @JoinColumn(name = "menu_section_id")
+    private MenuSection menuSection;
+
 
 }
