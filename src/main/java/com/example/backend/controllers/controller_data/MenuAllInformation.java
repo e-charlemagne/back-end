@@ -1,4 +1,4 @@
-package com.example.backend.controllers;
+package com.example.backend.controllers.controller_data;
 
 import com.example.backend.entities.order_menu.Meal;
 import com.example.backend.entities.order_menu.Menu;

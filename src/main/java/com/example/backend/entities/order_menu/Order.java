@@ -7,7 +7,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Data
@@ -25,14 +28,25 @@ public class Order {
 
     private String customerName;
 
-    private Integer price;
-
-    @ManyToOne
-    @JoinColumn(name = "meal_id")
-    private Meal meal;
+    @ManyToMany
+    @JoinTable(
+            name = "order_meal",
+            joinColumns = @JoinColumn(name = "order_id"),
+            inverseJoinColumns = @JoinColumn(name = "meal_id")
+    )
+    private Set<Meal> meals = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "table_id")
     private Table table;
+
+    // Calculate total price dynamically
+    @Transient
+    public BigDecimal getTotalPrice() {
+        return meals.stream()
+                .map(Meal::getPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    }
 
 }

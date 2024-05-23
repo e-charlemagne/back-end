@@ -7,6 +7,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -20,7 +24,7 @@ public class Meal {
     private Long id;
 
     @NotBlank(message = "price is mandatory")
-    private Integer price;
+    private BigDecimal price;
 
     @NotBlank(message = "meal name is also mandatory")
     private String meal_name;
@@ -32,5 +36,7 @@ public class Meal {
     @JoinColumn(name = "menu_section_id")
     private MenuSection menuSection;
 
+    @ManyToMany(mappedBy = "meals")
+    private Set<Order> orders = new HashSet<>();
 
 }
