@@ -14,6 +14,5 @@ public class WebConfiguration implements WebMvcConfigurer {
                 .allowedHeaders("*")
                 .allowCredentials(true);
     }
-
 }
 

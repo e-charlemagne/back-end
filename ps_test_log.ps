@@ -1,0 +1,8 @@
+# Define path to your Spring Boot application jar
+$jarPath = "path\to\your\application.jar"
+
+# Define log file path
+$logFile = "path\to\logs\myapp.log"
+
+# Start the Java process
+Start-Process java -ArgumentList "-jar", $jarPath -RedirectStandardOutput $logFile -RedirectStandardError $logFile -NoNewWindow

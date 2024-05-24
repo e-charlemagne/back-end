@@ -2,6 +2,7 @@ package com.example.backend.entities.order_menu;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,7 +24,7 @@ public class Meal {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @NotBlank(message = "price is mandatory")
+    @NotNull
     private BigDecimal price;
 
     @NotBlank(message = "meal name is also mandatory")
