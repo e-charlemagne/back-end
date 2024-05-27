@@ -20,6 +20,7 @@ import java.util.Set;
 @jakarta.persistence.Table(name = "_order")
 public class Order {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -40,13 +41,16 @@ public class Order {
     @JoinColumn(name = "table_id")
     private Table table;
 
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
+
     // Calculate total price dynamically
     @Transient
     public BigDecimal getTotalPrice() {
         return meals.stream()
                 .map(Meal::getPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-
     }
+
 
 }

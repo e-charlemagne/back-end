@@ -26,7 +26,7 @@ public class Table {
     @NotBlank(message = "name is needed")
     private String name;
 
-    private Integer seats_amount; // Made optional
+    private Integer seats_amount; //
 
     @Enumerated(EnumType.STRING)
     private TableStatus status;
@@ -36,4 +36,8 @@ public class Table {
 
     @OneToMany(mappedBy = "table", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Reservation> reservations = new HashSet<>();
+
+    private Integer xPosition;
+    private Integer yPosition;
+
 }

@@ -154,7 +154,6 @@ public class MenuController {
         return meal.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-
     @PutMapping("/meal-update/{id}")
     public ResponseEntity<Meal> updateMeal(@PathVariable Long id, @RequestBody Meal mealDetails) {
         Optional<Meal> mealOptional = mealRepository.findById(id);

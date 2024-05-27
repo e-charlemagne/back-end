@@ -1,66 +1,67 @@
 package com.example.backend.controllers;
 
-import com.example.backend.controllers.controller_data.OrderAllInformation;
-import com.example.backend.entities.order_menu.Meal;
-import com.example.backend.entities.order_menu.Menu;
-import com.example.backend.entities.order_menu.MenuSection;
 import com.example.backend.entities.order_menu.Order;
-import com.example.backend.entities.reservation.Reservation;
-import com.example.backend.entities.table.Table;
-import com.example.backend.repository.*;
+import com.example.backend.entities.order_menu.OrderStatus;
+import com.example.backend.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/orders")
 public class OrderController {
 
-  private final MenuRepository menuRepository;
-  private final MealRepository mealRepository;
-  private final MenuSectionRepository menuSectionRepository;
-  private final OrderRepository orderRepository;
-  private final TableRepository tableRepository;
-  private final ReservationRepository reservationRepository;
+    private final OrderRepository orderRepository;
 
     @Autowired
-    public OrderController(MenuRepository menuRepository,
-                           OrderRepository orderRepository,
-                           MealRepository mealRepository,
-                           ReservationRepository reservationRepository,
-                           TableRepository tableRepository,
-                           MenuSectionRepository menuSectionRepository
-                           ) {
-        this.menuRepository = menuRepository;
-        this.mealRepository = mealRepository;
-        this.menuSectionRepository = menuSectionRepository;
+    public OrderController(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
-        this.tableRepository = tableRepository;
-        this.reservationRepository = reservationRepository;
-
     }
 
-    @GetMapping("/order-list")
-    public OrderAllInformation getAllOrderData() {
-
-        List<Order> orders = orderRepository.findAll();
-        List<Menu> menus = menuRepository.findAll();
-        List<MenuSection> menuSections = menuSectionRepository.findAll();
-        List<Table> tables = tableRepository.findAll();
-        List<Reservation> reservations = reservationRepository.findAll();
-        List<Meal> meals = mealRepository.findAll();
-
-        return new OrderAllInformation(tables,
-                                       meals,
-                                       menuSections,
-                                       menus,
-                                       orders,
-                                       reservations);
+    @GetMapping
+    public List<Order> getAllOrders() {
+        return orderRepository.findAll();
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Order> getOrderById(@PathVariable Long id) {
+        Optional<Order> order = orderRepository.findById(id);
+        return order.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
 
+    @PostMapping
+    public Order createOrder(@RequestBody Order order) {
+        order.setStatus(OrderStatus.New);  // Set default status
+        return orderRepository.save(order);
+    }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Order> updateOrder(@PathVariable Long id, @RequestBody Order orderDetails) {
+        Optional<Order> orderOptional = orderRepository.findById(id);
+        if (orderOptional.isPresent()) {
+            Order order = orderOptional.get();
+            order.setCustomerName(orderDetails.getCustomerName());
+            order.setMeals(orderDetails.getMeals());
+            order.setTable(orderDetails.getTable());
+            order.setStatus(orderDetails.getStatus());
+            order.setOrderDate(orderDetails.getOrderDate());
+            final Order updatedOrder = orderRepository.save(order);
+            return ResponseEntity.ok(updatedOrder);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteOrder(@PathVariable Long id) {
+        if (orderRepository.existsById(id)) {
+            orderRepository.deleteById(id);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
