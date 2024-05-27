@@ -73,6 +73,7 @@ CREATE TABLE _table (
                         seats_amount INT,
                         status table_status
 );
+DROP TABLE _table;
 
 -- Insert initial data into _table
 INSERT INTO _table (id, name, seats_amount, status) VALUES
@@ -96,7 +97,30 @@ INSERT INTO _table (id, name, seats_amount, status) VALUES
                                                         (18, 'Table 18', 4, 'Empty_Now'),
                                                         (19, 'Table 19', 4, 'Empty_Now'),
                                                         (20, 'Table 20', 4, 'Empty_Now');
+delete from _table where id = 20;
 
+--updating tables to show different amount of tables,
+update _table
+    set seats_amount = 2
+    where id  IN (5,10,15,20);
+
+update _table
+set seats_amount = 6
+where id  IN (1,13,16,19);
+
+update _table
+set seats_amount = 8
+where id  IN (12);
+
+update _table
+set seats_amount = 3
+where id  IN (3,4,6);
+
+update _table
+set seats_amount = 5
+where id  IN (7,8,14);
+
+INSERT INTO _table (id, name, seats_amount, status) VALUES(20, 'Table 20', 4, 'Empty_Now');
 -- Create the ReservationType enum type
 CREATE TYPE reservation_type AS ENUM ('Birthday', 'Date', 'Celebration', 'Networking', 'Conference');
 
