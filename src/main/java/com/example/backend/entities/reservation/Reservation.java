@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -22,7 +23,7 @@ public class Reservation {
     private Long id;
 
     @NotBlank
-    private Date date;
+    private LocalDate date;
 
     @NotBlank
     private String reservation_description;

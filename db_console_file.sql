@@ -98,8 +98,18 @@ INSERT INTO _table (id, name, seats_amount, status) VALUES
                                                         (19, 'Table 19', 4, 'Empty_Now'),
                                                         (20, 'Table 20', 4, 'Empty_Now');
 delete from _table where id = 20;
-
+--------------------------------------------------------------------
+-- updating status of those tables;
+--------------------------------------------------------------------
+update _table
+set status = 'Reservation_Scheduled'
+where id  IN (5,10,15,20);
+--------------------------------------------------------------------
 --updating tables to show different amount of tables,
+--------------------------------------------------------------------
+update _table
+set seats_amount = 2
+where id  IN (5,10,15,20);
 update _table
     set seats_amount = 2
     where id  IN (5,10,15,20);
@@ -119,11 +129,13 @@ where id  IN (3,4,6);
 update _table
 set seats_amount = 5
 where id  IN (7,8,14);
-
+--------------------------------------------------------------------
+--------------------------------------------------------------------
 INSERT INTO _table (id, name, seats_amount, status) VALUES(20, 'Table 20', 4, 'Empty_Now');
 -- Create the ReservationType enum type
 CREATE TYPE reservation_type AS ENUM ('Birthday', 'Date', 'Celebration', 'Networking', 'Conference');
 
+select * from _reservation;
 -- Create the _reservation table
 CREATE TABLE _reservation (
                               id BIGSERIAL PRIMARY KEY,
@@ -190,3 +202,12 @@ select * from _reservation;
 select * from _menu;
 select * from _order;
 select * from order_meal;
+
+
+
+
+
+
+
+
+

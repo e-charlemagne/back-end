@@ -1,5 +1,6 @@
 package com.example.backend.controllers;
 
+import com.example.backend.entities.reservation.Reservation;
 import com.example.backend.entities.table.Table;
 import com.example.backend.repository.OrderRepository;
 import com.example.backend.repository.ReservationRepository;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -71,4 +73,10 @@ public class TableController {
             return ResponseEntity.notFound().build();
         }
     }
+    @GetMapping("/reservations/today")
+    public List<Reservation> getTodaysReservations() {
+        LocalDate today = LocalDate.now();
+        return resRepository.findByDate(today);
+    }
+
 }
