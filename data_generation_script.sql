@@ -11,11 +11,12 @@ $$
     DECLARE
         start_date DATE := current_date;
         end_date DATE := '2024-12-31';
-        reservation_id BIGINT := 6; -- Starting from 6, since you already have 1 to 5
+        reservation_id BIGINT := 1; -- Start from 1 since we truncated the table
         table_count INTEGER;
         day_count INTEGER;
         reservation_count INTEGER;
         reservation_date DATE;
+        reservation_time TIME;
         table_id BIGINT;
         reservation_type TEXT;
         reservation_description TEXT;
@@ -31,6 +32,8 @@ $$
 
                 FOR day_count IN 1 .. reservation_count LOOP
                         table_id := FLOOR(1 + RANDOM() * table_count);
+                        reservation_time := TIME '10:00' + (random() * (TIME '16:00' - TIME '10:00'))::interval; -- Random time between 10:00 and 02:00
+
                         reservation_type := CASE FLOOR(1 + RANDOM() * 5)
                                                 WHEN 1 THEN 'Birthday'
                                                 WHEN 2 THEN 'Date'
@@ -47,11 +50,10 @@ $$
                                                        WHEN 'Conference' THEN 'Business conference with keynote presentations and discussions. Conference on industry trends and future developments. Gathering for an annual business conference. Conference dinner with networking opportunities. Special conference event with panel discussions and presentations.'
                             END;
 
-                        -- Truncate the reservation_description to ensure it does not exceed 255 characters
-                        reservation_description := LEFT(reservation_description, 255);
+                        reservation_description := LEFT(reservation_description, 255); -- Ensure it does not exceed 255 characters
 
-                        INSERT INTO _reservation (id, date, reservation_description, reservation_type, table_id)
-                        VALUES (reservation_id, reservation_date, reservation_description, reservation_type::reservation_type, table_id);
+                        INSERT INTO _reservation (id, date, time, reservation_description, reservation_type, table_id)
+                        VALUES (reservation_id, reservation_date, reservation_time, reservation_description, reservation_type::reservation_type, table_id);
 
                         reservation_id := reservation_id + 1;
                     END LOOP;
@@ -59,4 +61,5 @@ $$
     END
 $$;
 
-select * from _reservation where date = '2024-06-01';
+select * from jwt_security.public._table where status = 'Empty_Now';\
+select * from _reservation where id = 20 ;

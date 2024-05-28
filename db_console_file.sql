@@ -73,11 +73,13 @@ CREATE TABLE _table (
                         seats_amount INT,
                         status table_status
 );
-DROP TABLE _table;
+ALTER TABLE _table ALTER COLUMN status SET DEFAULT 'Disabled';
 
+
+select  * from _table;
 -- Insert initial data into _table
 INSERT INTO _table (id, name, seats_amount, status) VALUES
-                                                        (1, 'Table 1', 4, 'Empty_Now'),
+                                                        (24, 'Table 1', 4, ''),
                                                         (2, 'Table 2', 4, 'Empty_Now'),
                                                         (3, 'Table 3', 4, 'Empty_Now'),
                                                         (4, 'Table 4', 4, 'Empty_Now'),
@@ -97,7 +99,14 @@ INSERT INTO _table (id, name, seats_amount, status) VALUES
                                                         (18, 'Table 18', 4, 'Empty_Now'),
                                                         (19, 'Table 19', 4, 'Empty_Now'),
                                                         (20, 'Table 20', 4, 'Empty_Now');
-delete from _table where id = 20;
+delete from _table where id = 23;
+
+--------------------------------------------------------------------
+-- changing the status of table for testing porpuses
+select * from _table where id = 23;
+update _table set status = 'Now_Occupied'
+where id IN (9,11);
+--------------------------------------------------------------------
 --------------------------------------------------------------------
 -- updating status of those tables;
 --------------------------------------------------------------------
@@ -135,7 +144,7 @@ INSERT INTO _table (id, name, seats_amount, status) VALUES(20, 'Table 20', 4, 'E
 -- Create the ReservationType enum type
 CREATE TYPE reservation_type AS ENUM ('Birthday', 'Date', 'Celebration', 'Networking', 'Conference');
 
-select * from _reservation;
+
 -- Create the _reservation table
 CREATE TABLE _reservation (
                               id BIGSERIAL PRIMARY KEY,
@@ -143,16 +152,15 @@ CREATE TABLE _reservation (
                               reservation_description VARCHAR(255) NOT NULL,
                               reservation_type reservation_type NOT NULL,
                               table_id BIGINT NOT NULL,
+                              time TIME NOT NULL,
                               FOREIGN KEY (table_id) REFERENCES _table(id)
 );
-INSERT INTO _reservation (date, reservation_description, reservation_type, table_id)
-VALUES
-    ('2024-06-01 19:00:00', 'Birthday party for John', 'Birthday', 1),
-    ('2024-06-02 20:00:00', 'Romantic dinner', 'Date', 2),
-    ('2024-06-03 18:00:00', 'Celebration of promotion', 'Celebration', 3),
-    ('2024-06-04 17:00:00', 'Networking event', 'Networking', 4),
-    ('2024-06-05 09:00:00', 'Business conference', 'Conference', 5);
+
 select * from _reservation;
+
+ALTER TABLE _reservation ADD COLUMN time TIME NOT NULL;
+
+
 
 
 -- Create the _order table
@@ -194,7 +202,7 @@ INSERT INTO order_meal (order_id, meal_id) VALUES
 
 -------------------------------------------------
 -- Query to verify data
-select * from _table;
+select * from _table where id= 24;
 select * from _user;
 select * from _meal;
 select * from _menusection;

@@ -7,6 +7,7 @@ import com.example.backend.repository.ReservationRepository;
 import com.example.backend.repository.TableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -55,8 +56,6 @@ public class TableController {
             table.setStatus(tableDetails.getStatus());
             table.setOrders(tableDetails.getOrders());
             table.setReservations(tableDetails.getReservations());
-            table.setXPosition(tableDetails.getXPosition());
-            table.setYPosition(tableDetails.getYPosition());
             Table updatedTable = tableRepository.save(table);
             return ResponseEntity.ok(updatedTable);
         } else {
@@ -64,6 +63,7 @@ public class TableController {
         }
     }
 
+    @Transactional
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTable(@PathVariable Long id) {
         if (tableRepository.existsById(id)) {
@@ -73,10 +73,10 @@ public class TableController {
             return ResponseEntity.notFound().build();
         }
     }
+
     @GetMapping("/reservations/today")
     public List<Reservation> getTodaysReservations() {
         LocalDate today = LocalDate.now();
         return resRepository.findByDate(today);
     }
-
 }

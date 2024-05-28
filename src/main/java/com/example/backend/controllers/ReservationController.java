@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,6 +58,7 @@ public class ReservationController {
         if (optionalReservation.isPresent()) {
             Reservation reservation = optionalReservation.get();
             reservation.setDate(reservationDetails.getDate());
+            reservation.setTime(reservationDetails.getTime());
             reservation.setReservation_description(reservationDetails.getReservation_description());
             reservation.setReservationType(reservationDetails.getReservationType());
             reservation.setTable(reservationDetails.getTable());
@@ -79,12 +81,14 @@ public class ReservationController {
         }
     }
 
-
     @GetMapping("/today")
     public List<Reservation> getTodaysReservations() {
         LocalDate today = LocalDate.now();
-        return reservationRepository.findByDate(today);
+        List<Reservation> reservations = reservationRepository.findByDate(today);
+        reservations.forEach(reservation -> {
+            reservation.setTime(reservation.getTime().truncatedTo(ChronoUnit.MINUTES)); // Ensure time is truncated to minutes
+        });
+        return reservations;
     }
-
 
 }

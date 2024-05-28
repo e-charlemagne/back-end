@@ -4,10 +4,7 @@ import com.example.backend.entities.order_menu.Order;
 import com.example.backend.entities.reservation.Reservation;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -21,23 +18,21 @@ import java.util.Set;
 public class Table {
 
     @Id
-    private Long id; // Manually assign IDs
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
     @NotBlank(message = "name is needed")
     private String name;
 
-    private Integer seats_amount; //
+    private Integer seats_amount;
 
     @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "table_status")
     private TableStatus status;
 
-    @OneToMany(mappedBy = "table", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "table", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<Order> orders = new HashSet<>();
 
-    @OneToMany(mappedBy = "table", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "table", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<Reservation> reservations = new HashSet<>();
-
-    private Integer xPosition;
-    private Integer yPosition;
-
 }
