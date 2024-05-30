@@ -17,7 +17,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "_meal")
+@jakarta.persistence.Table(name = "_meal")
 public class Meal {
 
     @Id
@@ -39,5 +39,4 @@ public class Meal {
 
     @ManyToMany(mappedBy = "meals")
     private Set<Order> orders = new HashSet<>();
-
 }

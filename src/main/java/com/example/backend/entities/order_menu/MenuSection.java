@@ -16,7 +16,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "_menusection")
+@jakarta.persistence.Table(name = "_menusection")
 public class MenuSection {
 
     @Id

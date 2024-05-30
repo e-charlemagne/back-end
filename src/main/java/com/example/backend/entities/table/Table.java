@@ -27,7 +27,7 @@ public class Table {
     private Integer seats_amount;
 
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "table_status")
+    @Column(name = "status")
     private TableStatus status;
 
     @OneToMany(mappedBy = "table", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -35,4 +35,24 @@ public class Table {
 
     @OneToMany(mappedBy = "table", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<Reservation> reservations = new HashSet<>();
+
+    public void addOrder(Order order) {
+        orders.add(order);
+        order.setTable(this);
+    }
+
+    public void removeOrder(Order order) {
+        orders.remove(order);
+        order.setTable(null);
+    }
+
+    public void addReservation(Reservation reservation) {
+        reservations.add(reservation);
+        reservation.setTable(this);
+    }
+
+    public void removeReservation(Reservation reservation) {
+        reservations.remove(reservation);
+        reservation.setTable(null);
+    }
 }

@@ -15,7 +15,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "_reservation")
+@jakarta.persistence.Table(name = "_reservation")
 public class Reservation {
 
     @Id
@@ -37,5 +37,4 @@ public class Reservation {
     @ManyToOne
     @JoinColumn(name = "table_id")
     private com.example.backend.entities.table.Table table;
-
 }
