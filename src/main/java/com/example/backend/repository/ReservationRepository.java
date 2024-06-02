@@ -17,4 +17,7 @@ public interface ReservationRepository extends JpaRepository<Reservation,Integer
 
 
     List<Reservation> findByDate(LocalDate today);
+
+
+    List<Reservation> findByDateBetween(LocalDate startDate, LocalDate endDate);
 }

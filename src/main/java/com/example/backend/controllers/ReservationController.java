@@ -36,6 +36,12 @@ public class ReservationController {
             return ResponseEntity.badRequest().body(null);
         }
     }
+    @GetMapping("/month")
+    public List<Reservation> getReservationsByMonth(@RequestParam int year, @RequestParam int month) {
+        LocalDate startDate = LocalDate.of(year, month, 1);
+        LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
+        return reservationRepository.findByDateBetween(startDate, endDate);
+    }
 
     // Get all reservations
     @GetMapping("/list")
@@ -44,7 +50,7 @@ public class ReservationController {
     }
 
     // Get a reservation by ID
-    @GetMapping("/{id}")
+    @GetMapping("/by-id/{id}")
     public ResponseEntity<Reservation> getReservationById(@PathVariable Long id) {
         Optional<Reservation> reservation = reservationRepository.findById(id);
         return reservation.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
