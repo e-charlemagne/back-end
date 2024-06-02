@@ -14,10 +14,8 @@ CREATE TABLE _reservation (
 );
 ALTER TABLE _reservation ADD COLUMN time TIME NOT NULL;
 
-select r.date, r.table_id, t.id,t.name
-from _reservation r, _table t where r.date = '2024-07-01'
-                                AND t.id = r.table_id
-                              order by t.id;
+select * from _reservation where date = '2024-06-08';
+
 select * from _reservation,_table
 where name = '2 testing again' ;
 

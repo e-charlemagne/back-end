@@ -3,12 +3,13 @@ package com.example.backend.controllers;
 import com.example.backend.entities.reservation.Reservation;
 import com.example.backend.repository.ReservationRepository;
 import com.example.backend.repository.TableRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,11 +37,20 @@ public class ReservationController {
             return ResponseEntity.badRequest().body(null);
         }
     }
+
     @GetMapping("/month")
     public List<Reservation> getReservationsByMonth(@RequestParam int year, @RequestParam int month) {
         LocalDate startDate = LocalDate.of(year, month, 1);
         LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
         return reservationRepository.findByDateBetween(startDate, endDate);
+    }
+
+    // Get reservations by date
+    @GetMapping("/date")
+    public List<Reservation> getReservationsByDate(@RequestParam String date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");
+        LocalDate localDate = LocalDate.parse(date, formatter);
+        return reservationRepository.findByDate(localDate);
     }
 
     // Get all reservations
@@ -77,10 +87,13 @@ public class ReservationController {
     }
 
     // Delete a reservation by ID
+    @Transactional
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
         if (reservationRepository.existsById(id)) {
             reservationRepository.deleteById(id);
+            System.out.println("Reservation deleted: reservationRepository.existsById(id):"+
+                    " :" + reservationRepository.existsById(id)+ " -> ");
             return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.notFound().build();
@@ -90,11 +103,6 @@ public class ReservationController {
     @GetMapping("/today")
     public List<Reservation> getTodaysReservations() {
         LocalDate today = LocalDate.now();
-        List<Reservation> reservations = reservationRepository.findByDate(today);
-        reservations.forEach(reservation -> {
-            reservation.setTime(reservation.getTime().truncatedTo(ChronoUnit.MINUTES)); // Ensure time is truncated to minutes
-        });
-        return reservations;
+        return reservationRepository.findByDate(today);
     }
-
 }
