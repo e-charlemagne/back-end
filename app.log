@@ -70641,3 +70641,11 @@ Unconditional classes:
 2024-06-02T19:39:43.559+02:00 DEBUG 23760 --- [back-end] [http-nio-8080-exec-3] m.m.a.RequestResponseBodyMethodProcessor : Writing [[Reservation(id=19, date=2024-06-01, time=14:47:46.205, reservation_description=Celebration of promo (truncated)...]
 2024-06-02T19:39:43.564+02:00 DEBUG 23760 --- [back-end] [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
 2024-06-02T21:26:59.898+02:00  WARN 23760 --- [back-end] [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h37m56s875ms839µs200ns).
+<<<<<<< HEAD
+=======
+2024-06-02T21:29:45.914+02:00 DEBUG 23760 --- [back-end] [SpringApplicationShutdownHook] o.s.b.a.ApplicationAvailabilityBean      : Application availability state ReadinessState changed from ACCEPTING_TRAFFIC to REFUSING_TRAFFIC
+2024-06-02T21:29:45.914+02:00 DEBUG 23760 --- [back-end] [SpringApplicationShutdownHook] ConfigServletWebServerApplicationContext : Closing org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@38c2abf6, started on Sun Jun 02 19:24:00 CEST 2024
+2024-06-02T21:29:45.924+02:00  INFO 23760 --- [back-end] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-06-02T21:29:45.927+02:00  INFO 23760 --- [back-end] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2024-06-02T21:29:45.929+02:00  INFO 23760 --- [back-end] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+>>>>>>> main
