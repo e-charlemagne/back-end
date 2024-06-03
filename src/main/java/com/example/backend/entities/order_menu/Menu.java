@@ -29,4 +29,5 @@ public class Menu {
 
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<MenuSection> menuSections = new HashSet<>();
+
 }

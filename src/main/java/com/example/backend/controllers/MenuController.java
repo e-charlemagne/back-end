@@ -88,14 +88,15 @@ public class MenuController {
     }
 
     /** CRUD operations for MenuSection **/
-
     /** http://localhost:8080/menu/menusection-all */
+
     @GetMapping("menusection-all")
     public List<MenuSection> getAllMenuSections() {
         return menuSectionRepository.findAll();
     }
 
     /** http://localhost:8080/menu/create-menusection */
+
     @PostMapping("/create-menusection")
     public MenuSection createMenuSection(@RequestBody MenuSection menuSection) {
         return menuSectionRepository.save(menuSection);

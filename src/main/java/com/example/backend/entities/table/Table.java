@@ -55,4 +55,9 @@ public class Table {
         reservations.remove(reservation);
         reservation.setTable(null);
     }
+    public Table(Long id) {
+        this.id = id;
+    }
+
+
 }

@@ -3,7 +3,6 @@ package com.example.backend.controllers;
 import com.example.backend.entities.reservation.Reservation;
 import com.example.backend.repository.ReservationRepository;
 import com.example.backend.repository.TableRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -87,13 +86,10 @@ public class ReservationController {
     }
 
     // Delete a reservation by ID
-    @Transactional
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
         if (reservationRepository.existsById(id)) {
             reservationRepository.deleteById(id);
-            System.out.println("Reservation deleted: reservationRepository.existsById(id):"+
-                    " :" + reservationRepository.existsById(id)+ " -> ");
             return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.notFound().build();

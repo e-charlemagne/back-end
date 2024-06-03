@@ -49,4 +49,5 @@ public class Order {
                 .map(Meal::getPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
+
 }
