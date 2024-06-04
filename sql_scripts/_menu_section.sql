@@ -4,3 +4,4 @@ CREATE TABLE _menusection (
                               menu_id BIGINT NOT NULL,
                               FOREIGN KEY (menu_id) REFERENCES _menu(id)
 );
+

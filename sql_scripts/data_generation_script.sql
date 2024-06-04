@@ -61,5 +61,82 @@ $$
     END
 $$;
 
-select * from _table ;
-select * from _reservation where id = 20 ;
+
+
+-----------------------------------
+-----------------------------------
+-----------------------------------
+-----------------------------------
+-----------------------------------
+-----------------------------------
+-----------------------------------
+-----------------------------------
+-----------------------------------
+-- Insert new menu
+INSERT INTO _menu (title) VALUES ('Drinks');
+-- Assuming the ID of the new menu will be the next sequential ID
+-- Retrieve the ID of the newly inserted menu
+DO $$
+    DECLARE
+        new_menu_id BIGINT;
+    BEGIN
+        SELECT id INTO new_menu_id FROM _menu WHERE title = 'Drinks';
+
+        -- Insert menusections for the new menu
+        INSERT INTO _menusection (title_section, menu_id) VALUES
+                                                              ('Cold Drinks', new_menu_id),
+                                                              ('Hot Drinks', new_menu_id),
+                                                              ('Signature Cocktails', new_menu_id),
+                                                              ('Classic Cocktails', new_menu_id),
+                                                              ('Mocktails', new_menu_id),
+                                                              ('Vodka', new_menu_id),
+                                                              ('Rum', new_menu_id),
+                                                              ('Gin', new_menu_id),
+                                                              ('Tequila', new_menu_id),
+                                                              ('Whisky', new_menu_id),
+                                                              ('Irish Whiskey', new_menu_id),
+                                                              ('Single Malt', new_menu_id),
+                                                              ('American & Tennessee Whiskey', new_menu_id),
+                                                              ('Cognac / Brandy', new_menu_id),
+                                                              ('Aperitif', new_menu_id),
+                                                              ('Liqueurs', new_menu_id),
+                                                              ('Champagne', new_menu_id),
+                                                              ('Sparkling Wine', new_menu_id),
+                                                              ('White Wine', new_menu_id),
+                                                              ('Red Wine', new_menu_id),
+                                                              ('Rose Wine', new_menu_id),
+                                                              ('Beer', new_menu_id);
+
+        -- Retrieve the IDs of the newly inserted menusections
+        FOR menusection_id IN
+            SELECT id FROM _menusection WHERE menu_id = new_menu_id
+            LOOP
+                -- Insert meals for each menusection (example shown for one menusection)
+                IF (SELECT title_section FROM _menusection WHERE id = menusection_id) = 'Cold Drinks' THEN
+                    INSERT INTO _meal (price, meal_name, meal_description, menu_section_id) VALUES
+                                                                                                (12.00, 'Coca-Cola Zero Sugar / Coca-Cola Original Taste / Fanta / Sprite / Kinley Tonic Water / Fuze Tea Peach-Hibiscus / Cappy Orange / Cappy Apple', '250ml', menusection_id),
+                                                                                                (12.00, 'Still Water Kropla Beskidu', '330ml', menusection_id),
+                                                                                                (21.00, 'Still Water Kropla Beskidu', '750ml', menusection_id),
+                                                                                                (12.00, 'Sparkling Water Kropla Beskidu', '330ml', menusection_id),
+                                                                                                (21.00, 'Sparkling Water Kropla Beskidu', '750ml', menusection_id),
+                                                                                                (26.00, 'Still Water Acqua Panna', '750ml', menusection_id),
+                                                                                                (26.00, 'Sparkling Water San Pellegrino', '750ml', menusection_id),
+                                                                                                (18.00, 'Red Bull', '250ml', menusection_id),
+                                                                                                (18.00, 'Three Cents Tonic Water / Ginger Beer / Pink Grapefruit / Aegean Tonic', '200ml', menusection_id),
+                                                                                                (22.00, 'Espresso Three Cents Tonic', '300ml', menusection_id);
+                ELSIF (SELECT title_section FROM _menusection WHERE id = menusection_id) = 'Hot Drinks' THEN
+                    INSERT INTO _meal (price, meal_name, meal_description, menu_section_id) VALUES
+                                                                                                (18.00, 'Tea', '250ml', menusection_id),
+                                                                                                (11.00, 'Espresso', '35ml', menusection_id),
+                                                                                                (15.00, 'Double Espresso', '70ml', menusection_id),
+                                                                                                (15.00, 'Americano', '250ml', menusection_id),
+                                                                                                (15.00, 'Cappuccino', '250ml', menusection_id),
+                                                                                                (16.00, 'Caffè latte', '250ml', menusection_id);
+                    -- Add similar blocks for other menusections and their corresponding meals
+                END IF;
+            END LOOP;
+    END $$;
+
+-- Add more INSERT statements for other menusections and their respective meals similarly
+
+
