@@ -110,3 +110,13 @@ CREATE TYPE role_type AS ENUM ('Admin', 'User');
 select * from _order;
 
 
+ALTER TABLE _reservation ADD CONSTRAINT fk_table FOREIGN KEY (table_id) REFERENCES _table(id);
+ALTER TABLE _menusection ADD CONSTRAINT fk_menu FOREIGN KEY (menu_id) REFERENCES _menu(id);
+ALTER TABLE _meal ADD CONSTRAINT fk_menu_section FOREIGN KEY (menu_section_id) REFERENCES _menusection(id);
+ALTER TABLE _order ADD CONSTRAINT fk_table_order FOREIGN KEY (table_id) REFERENCES _table(id);
+ALTER TABLE order_meal ADD CONSTRAINT fk_order FOREIGN KEY (order_id) REFERENCES _order(id);
+ALTER TABLE order_meal ADD CONSTRAINT fk_meal FOREIGN KEY (meal_id) REFERENCES _meal(id);
+
+
+CREATE INDEX idx_customer_name ON _order(customer_name);
+CREATE INDEX idx_meal_name ON _meal(meal_name);

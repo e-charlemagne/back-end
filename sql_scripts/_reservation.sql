@@ -16,8 +16,8 @@ ALTER TABLE _reservation ADD COLUMN time TIME NOT NULL;
 
 select * from _reservation where date = '2024-06-08';
 
-select * from _reservation,_table
-where name = '2 testing again' ;
+select COUNT(_table.name, r.table_id) from _table,  _reservation r
+                                      where _table.name = '2 testing again'  ;
 
 select * from _table where name = '2 testing again';
 
