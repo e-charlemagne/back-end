@@ -21,6 +21,7 @@ select COUNT(_table.name, r.table_id) from _table,  _reservation r
 
 select * from _table where name = '2 testing again';
 
+select    * from _reservation where date= '2024-06-06';
 
 
 

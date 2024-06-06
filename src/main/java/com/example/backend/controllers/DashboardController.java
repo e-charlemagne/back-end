@@ -14,7 +14,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.temporal.WeekFields;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/dashboard")
@@ -34,7 +40,8 @@ public class DashboardController {
                                OrderRepository orderRepository,
                                TableRepository tableRepository,
                                ReservationRepository reservationRepository,
-                               MealRepository mealRepository, MenuSectionRepository menuSectionRepository) {
+                               MealRepository mealRepository,
+                               MenuSectionRepository menuSectionRepository) {
 
         this.userRepository = userRepository;
         this.menuRepository = menuRepository;
@@ -44,9 +51,6 @@ public class DashboardController {
         this.mealRepository = mealRepository;
         this.menuSectionRepository = menuSectionRepository;
     }
-
-
-
 
     @GetMapping()
     public DashBoardAllInformation getAllInformation() {
@@ -58,9 +62,16 @@ public class DashboardController {
         List<Menu> menus = menuRepository.findAll();
         List<MenuSection> menuSection = menuSectionRepository.findAll();
 
-        return new DashBoardAllInformation(tables,meals,menuSection,menus,orders,reservations,users);
-
+        return new DashBoardAllInformation(tables, meals, menuSection, menus, orders, reservations, users);
     }
+    @GetMapping("/reservations-per-day")
+    public Map<DayOfWeek, Long> getReservationsPerDay() {
+        LocalDate now = LocalDate.now();
+        LocalDate startOfWeek = now.with(WeekFields.of(Locale.getDefault()).dayOfWeek(), 1); // Assuming week starts on Monday
+        LocalDate endOfWeek = startOfWeek.plusDays(6);
 
-
+        List<Reservation> reservations = reservationRepository.findByDateBetween(startOfWeek, endOfWeek);
+        return reservations.stream()
+                .collect(Collectors.groupingBy(reservation -> reservation.getDate().getDayOfWeek(), Collectors.counting()));
+    }
 }
