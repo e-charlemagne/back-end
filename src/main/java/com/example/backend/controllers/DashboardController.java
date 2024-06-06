@@ -74,4 +74,5 @@ public class DashboardController {
         return reservations.stream()
                 .collect(Collectors.groupingBy(reservation -> reservation.getDate().getDayOfWeek(), Collectors.counting()));
     }
+
 }
