@@ -38,6 +38,13 @@ public class MenuController {
         return menuRepository.findAll();
     }
 
+    /** http://localhost:8080/menu/{menuId}/sections **/
+    @GetMapping("/{menuId}/sections")
+    public List<MenuSection> getMenuSectionsByMenuId(@PathVariable Long menuId) {
+        return menuSectionRepository.findByMenuId(menuId);
+    }
+
+
     /** http://localhost:8080/menu/menu-all-list */
     @GetMapping("/menu-all-list")
     public MenuAllInformation getAllData() {

@@ -22,18 +22,23 @@ public class TableController {
 
     private final TableRepository tableRepository;
     private final ReservationRepository resRepository;
-    private final OrderRepository _orderRepository;
+    private final OrderRepository orderRepository;
 
     @Autowired
     public TableController(TableRepository tableRepository, ReservationRepository resRepository, OrderRepository orderRepository) {
         this.tableRepository = tableRepository;
         this.resRepository = resRepository;
-        this._orderRepository = orderRepository;
+        this.orderRepository = orderRepository;
     }
 
     @GetMapping
     public List<Table> getAllTables() {
         return tableRepository.findAll();
+    }
+
+    @GetMapping("/available")
+    public List<Table> getAvailableTables() {
+        return tableRepository.findByStatus(TableStatus.Empty_Now);
     }
 
     @PostMapping
@@ -82,8 +87,6 @@ public class TableController {
         }
     }
 
-
-
     @Transactional
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteTable(@PathVariable Long id) {
@@ -99,8 +102,6 @@ public class TableController {
             return ResponseEntity.notFound().build();
         }
     }
-
-
 
     @GetMapping("/reservations/today")
     public List<Reservation> getTodaysReservations() {

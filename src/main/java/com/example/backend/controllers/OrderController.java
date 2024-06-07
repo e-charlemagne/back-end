@@ -13,7 +13,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/orders")
 public class OrderController {
-
     private final OrderRepository orderRepository;
 
     @Autowired
@@ -33,9 +32,15 @@ public class OrderController {
     }
 
     @PostMapping
-    public Order createOrder(@RequestBody Order order) {
-        order.setStatus(OrderStatus.New);  // Set default status
-        return orderRepository.save(order);
+    public ResponseEntity<?> createOrder(@RequestBody Order order) {
+        try {
+            order.setStatus(OrderStatus.New);  // Set default status
+            Order savedOrder = orderRepository.save(order);
+            return ResponseEntity.ok(savedOrder);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body("Invalid request data");
+        }
     }
 
     @PutMapping("/{id}")
