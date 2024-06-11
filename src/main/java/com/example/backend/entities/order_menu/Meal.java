@@ -39,4 +39,6 @@ public class Meal {
 
     @ManyToMany(mappedBy = "meals")
     private Set<Order> orders = new HashSet<>();
+
+    // allergens field;
 }

@@ -1,6 +1,7 @@
 package com.example.backend.entities.order_menu;
 
 public enum OrderStatus {
+
     Paid,  /** Displays that order is paid. It will be used for statistic porpuses*/
     ReadyToPay,   /** Displays that order is Ready To by paid. It will be used for statistic porpuses*/
     New,   /** Displays that order is New. This is happening after creating this order. It will be used for statistic porpuses*/

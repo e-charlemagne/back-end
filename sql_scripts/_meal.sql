@@ -6,3 +6,7 @@ CREATE TABLE _meal (
                        menu_section_id BIGINT NOT NULL,
                        FOREIGN KEY (menu_section_id) REFERENCES _menusection(id)
 );
+
+
+
+select * from _meal where menu_section_id = 56;

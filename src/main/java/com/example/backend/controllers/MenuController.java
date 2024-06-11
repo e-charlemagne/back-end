@@ -41,6 +41,7 @@ public class MenuController {
     /** http://localhost:8080/menu/{menuId}/sections **/
     @GetMapping("/{menuId}/sections")
     public List<MenuSection> getMenuSectionsByMenuId(@PathVariable Long menuId) {
+
         return menuSectionRepository.findByMenuId(menuId);
     }
 
@@ -97,7 +98,7 @@ public class MenuController {
     /** CRUD operations for MenuSection **/
     /** http://localhost:8080/menu/menusection-all */
 
-    @GetMapping("menusection-all")
+    @GetMapping("/menusection-all")
     public List<MenuSection> getAllMenuSections() {
         return menuSectionRepository.findAll();
     }
@@ -161,6 +162,14 @@ public class MenuController {
         Optional<Meal> meal = mealRepository.findById(id);
         return meal.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    @GetMapping("/meals-based-on-menusection/{menuSectionId}")
+    public ResponseEntity<List<Meal>> getMealsBasedOnMenuSection(@PathVariable Long menuSectionId) {
+        List<Meal> meals = mealRepository.findByMenuSectionId(menuSectionId);
+        return ResponseEntity.ok(meals);
+    }
+
+
 
     @PutMapping("/meal-update/{id}")
     public ResponseEntity<Meal> updateMeal(@PathVariable Long id, @RequestBody Meal mealDetails) {

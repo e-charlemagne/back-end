@@ -32,10 +32,16 @@ public class Reservation {
     @NotBlank
     private String reservation_description;
 
+    /** NAME OF THE CUSTOMER WHO MADE RESERVATION*/
+    /** IMPLEMENT CONFIRMATION FROM CUSTOMER SIDE
+     * WHETHER RESERVATION WAS CONFIRMED.*/
+
     @Enumerated(EnumType.STRING)
     private ReservationType reservationType;
 
     @ManyToOne
     @JoinColumn(name = "table_id")
     private com.example.backend.entities.table.Table table;
+
+    /**RESERVATION PROPOSITION*/
 }
