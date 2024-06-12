@@ -10,3 +10,6 @@ CREATE TABLE _meal (
 
 
 select * from _meal where menu_section_id = 56;
+
+select * from _meal;
+

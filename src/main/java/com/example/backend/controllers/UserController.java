@@ -1,5 +1,6 @@
 package com.example.backend.controllers;
 
+import com.example.backend.entities.actors.Role;
 import com.example.backend.entities.actors.User;
 import com.example.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/main")
@@ -24,6 +26,17 @@ public class UserController {
     public List<User> getAllUsers() {
         System.out.println("Showing the list of users");
         return _userRepository.findAll();
+    }
+
+    /**
+     * ADDING END POINT FOR FRONT-END , TO SHOW THIS DATA IN 'MENU -> ADD_ORDER -> USERS'.
+     * There should be displayed information about Users with role_type as Customer.
+     * THis will allow us to assing the user to the order. After that, we would be able to track this info in our DB.
+     */
+
+    @GetMapping("/customers")
+    public List<User> getUserByStatusAsCustomers() {
+        return _userRepository.findByRole(Role.Customer);
     }
 
     @PostMapping("/adding-user")

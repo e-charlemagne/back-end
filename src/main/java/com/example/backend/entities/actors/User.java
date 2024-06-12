@@ -1,5 +1,6 @@
 package com.example.backend.entities.actors;
 
+import com.example.backend.entities.order_menu.Order;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
@@ -10,6 +11,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Entity
 @Data
@@ -18,12 +22,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @Table(name = "_user")
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    @NotBlank(message = "firstname is mandatory")
+    @NotBlank(message = "Firstname is mandatory")
     @Size(min = 1, max = 255)
     private String firstname;
 
@@ -44,5 +47,8 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @ManyToMany(mappedBy = "customers")
+    private List<Order> orders = new ArrayList<>();
 
 }

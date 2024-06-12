@@ -1,5 +1,6 @@
 package com.example.backend.entities.order_menu;
 
+import com.example.backend.entities.actors.User;
 import com.example.backend.entities.table.Table;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,7 +10,9 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -42,6 +45,14 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
+
+    @ManyToMany
+    @JoinTable(
+            name = "order_customers",
+            joinColumns = @JoinColumn(name = "order_id"),
+            inverseJoinColumns = @JoinColumn(name = "customer_id")
+    )
+    private List<User> customers = new ArrayList<>();
 
     @Transient
     public BigDecimal getTotalPrice() {
