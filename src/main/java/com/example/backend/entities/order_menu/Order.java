@@ -2,6 +2,8 @@ package com.example.backend.entities.order_menu;
 
 import com.example.backend.entities.actors.User;
 import com.example.backend.entities.table.Table;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,6 +23,8 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @jakarta.persistence.Table(name = "_order")
+
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Order {
 
     @Id
