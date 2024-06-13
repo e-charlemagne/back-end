@@ -54,11 +54,23 @@ public class Order {
     )
     private List<User> customers = new ArrayList<>();
 
-    @Transient
-    public BigDecimal getTotalPrice() {
+    private BigDecimal price;
+
+    public BigDecimal calculateTotalPrice() {
         return meals.stream()
-                .map(Meal::getPrice)
+                .map(meal -> meal.getPrice() != null ? meal.getPrice() : BigDecimal.ZERO)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
+
+
+    /**
+     * Add Taxes_Discounts to the order. My suggestion would be to implement something like
+     * again , EnumClass..? With, enum types of different amount of discounts.
+     * I would like to implement that as ENUM and not as a functional variable due to one reason,
+     * that we would be able to filter and store data more efficiently. Because, anyway,
+     * that would be much harder to track orders with discounts, if that would be implemented as a function..
+     * On the other hand, adding custom enum_type to DB, and create a custom field there - will help us to track this all.
+     *
+     * */
 
 }

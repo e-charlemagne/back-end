@@ -31,10 +31,11 @@ public class OrderController {
         return order.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping
+    @PostMapping("/post-order")
     public ResponseEntity<?> createOrder(@RequestBody Order order) {
         try {
             order.setStatus(OrderStatus.New);  // Set default status
+            order.setPrice(order.calculateTotalPrice());  // Calculate and set the price
             Order savedOrder = orderRepository.save(order);
             return ResponseEntity.ok(savedOrder);
         } catch (Exception e) {
@@ -42,6 +43,8 @@ public class OrderController {
             return ResponseEntity.badRequest().body("Invalid request data");
         }
     }
+
+
 
     @PutMapping("/{id}")
     public ResponseEntity<Order> updateOrder(@PathVariable Long id, @RequestBody Order orderDetails) {

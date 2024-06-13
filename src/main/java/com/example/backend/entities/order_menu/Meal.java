@@ -24,7 +24,7 @@ public class Meal {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @NotNull
+
     private BigDecimal price;
 
     @NotBlank(message = "meal name is also mandatory")
