@@ -1,6 +1,7 @@
 package com.example.backend.entities.actors;
 
 import com.example.backend.entities.order_menu.Order;
+import com.example.backend.entities.reservation.Reservation;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
@@ -50,5 +51,12 @@ public class User {
 
     @ManyToMany(mappedBy = "customers")
     private List<Order> orders = new ArrayList<>();
+
+    @OneToMany(mappedBy = "customer")
+    private List<Reservation> reservations = new ArrayList<>();
+
+    /**
+     * Instead of implementing a simple field for customer_name, I`ve decided to add an association between Reservation <-> User classes.
+     * */
 
 }

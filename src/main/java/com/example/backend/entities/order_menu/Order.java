@@ -66,7 +66,7 @@ public class Order {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-
+}
     /**
      * Add Taxes_Discounts to the order. My suggestion would be to implement something like
      * again , EnumClass..? With, enum types of different amount of discounts.
@@ -77,4 +77,4 @@ public class Order {
      *
      * */
 
-}
+

@@ -19,3 +19,4 @@ ALTER TABLE _meal ALTER COLUMN price SET NOT NULL;
 ALTER TABLE _meal ALTER COLUMN price SET DEFAULT 0.00;
 
 
+select * from _meal where meal_name LIKE 'Martel%';

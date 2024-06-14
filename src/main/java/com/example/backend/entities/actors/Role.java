@@ -1,5 +1,5 @@
 package com.example.backend.entities.actors;
 
 public enum Role {
-    Admin, User, Customer
+    Admin, Bartender, Customer, Receptionist, Manager
 }

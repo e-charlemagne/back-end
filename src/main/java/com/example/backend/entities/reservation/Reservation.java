@@ -1,5 +1,6 @@
 package com.example.backend.entities.reservation;
 
+import com.example.backend.entities.actors.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -36,6 +37,10 @@ public class Reservation {
     /** IMPLEMENT CONFIRMATION FROM CUSTOMER SIDE
      * WHETHER RESERVATION WAS CONFIRMED.*/
 
+    @ManyToOne
+    @JoinColumn(name = "customer_id")
+    private User customer;
+    
     @Enumerated(EnumType.STRING)
     private ReservationType reservationType;
 

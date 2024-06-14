@@ -10,10 +10,32 @@ CREATE TABLE _reservation (
                               reservation_type reservation_type NOT NULL,
                               table_id BIGINT NOT NULL,
                               time TIME NOT NULL,
-                              FOREIGN KEY (table_id) REFERENCES _table(id)
+                              customer_id BIGINT NOT NULL,
+                              FOREIGN KEY (table_id) REFERENCES _table(id),
+                              FOREIGN KEY (customer_id) REFERENCES _user(id)
 );
 ALTER TABLE _reservation ADD COLUMN time TIME NOT NULL;
+select * from _reservation;
 
+ALTER TABLE _reservation
+    ADD COLUMN customer_id BIGINT;
+
+UPDATE _reservation
+SET customer_id = 1
+WHERE customer_id IS NULL;
+
+ALTER TABLE _reservation
+    ALTER COLUMN customer_id SET NOT NULL,
+    ADD FOREIGN KEY (customer_id) REFERENCES _user(id);
+
+
+ALTER TABLE _reservation
+    ALTER COLUMN customer_id SET NOT NULL,
+    ADD FOREIGN KEY (customer_id) REFERENCES _user(id);
+
+
+
+select * from _table;
 select * from _reservation where date = '2024-06-08';
 
 select COUNT(_table.name, r.table_id) from _table,  _reservation r

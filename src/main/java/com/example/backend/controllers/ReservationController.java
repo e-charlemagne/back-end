@@ -3,6 +3,7 @@ package com.example.backend.controllers;
 import com.example.backend.entities.reservation.Reservation;
 import com.example.backend.repository.ReservationRepository;
 import com.example.backend.repository.TableRepository;
+import com.example.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,18 +19,20 @@ public class ReservationController {
 
     private final ReservationRepository reservationRepository;
     private final TableRepository tableRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public ReservationController(ReservationRepository reservationRepository, TableRepository tableRepository) {
+    public ReservationController(ReservationRepository reservationRepository, TableRepository tableRepository, UserRepository userRepository) {
         this.reservationRepository = reservationRepository;
         this.tableRepository = tableRepository;
+        this.userRepository = userRepository;
     }
 
     // Create a new reservation
     @PostMapping("/create")
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
-        // Ensure the table exists
-        if (tableRepository.existsById(reservation.getTable().getId())) {
+        // Ensure the table and customer exist
+        if (tableRepository.existsById(reservation.getTable().getId()) && userRepository.existsById(reservation.getCustomer().getId())) {
             Reservation savedReservation = reservationRepository.save(reservation);
             return ResponseEntity.ok(savedReservation);
         } else {
@@ -77,6 +80,7 @@ public class ReservationController {
             reservation.setReservation_description(reservationDetails.getReservation_description());
             reservation.setReservationType(reservationDetails.getReservationType());
             reservation.setTable(reservationDetails.getTable());
+            reservation.setCustomer(reservationDetails.getCustomer());
 
             Reservation updatedReservation = reservationRepository.save(reservation);
             return ResponseEntity.ok(updatedReservation);
