@@ -34,8 +34,8 @@ public class OrderController {
     @PostMapping("/post-order")
     public ResponseEntity<?> createOrder(@RequestBody Order order) {
         try {
-            order.setStatus(OrderStatus.New);  // Set default status
-            order.setPrice(order.calculateTotalPrice());  // Calculate and set the price
+            order.setStatus(OrderStatus.New);
+            order.setPrice(order.calculateTotalPrice());
             Order savedOrder = orderRepository.save(order);
             return ResponseEntity.ok(savedOrder);
         } catch (Exception e) {
@@ -43,8 +43,6 @@ public class OrderController {
             return ResponseEntity.badRequest().body("Invalid request data");
         }
     }
-
-
 
     @PutMapping("/{id}")
     public ResponseEntity<Order> updateOrder(@PathVariable Long id, @RequestBody Order orderDetails) {

@@ -1,6 +1,7 @@
 package com.example.backend.entities.reservation;
 
 import com.example.backend.entities.actors.User;
+import com.example.backend.entities.table.TableStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -19,7 +20,6 @@ import java.time.LocalTime;
 @Builder
 @jakarta.persistence.Table(name = "_reservation")
 public class Reservation {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,20 +33,20 @@ public class Reservation {
     @NotBlank
     private String reservation_description;
 
-    /** NAME OF THE CUSTOMER WHO MADE RESERVATION*/
-    /** IMPLEMENT CONFIRMATION FROM CUSTOMER SIDE
-     * WHETHER RESERVATION WAS CONFIRMED.*/
-
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private User customer;
-    
+
     @Enumerated(EnumType.STRING)
+    @NotNull
     private ReservationType reservationType;
 
     @ManyToOne
     @JoinColumn(name = "table_id")
     private com.example.backend.entities.table.Table table;
+    /** NAME OF THE CUSTOMER WHO MADE RESERVATION*/
+    /** IMPLEMENT CONFIRMATION FROM CUSTOMER SIDE
+     * WHETHER RESERVATION WAS CONFIRMED.*/
 
     /**RESERVATION PROPOSITION*/
 }

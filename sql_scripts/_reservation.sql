@@ -17,6 +17,8 @@ CREATE TABLE _reservation (
 ALTER TABLE _reservation ADD COLUMN time TIME NOT NULL;
 select * from _reservation;
 
+
+
 ALTER TABLE _reservation
     ADD COLUMN customer_id BIGINT;
 

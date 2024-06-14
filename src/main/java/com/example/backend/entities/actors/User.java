@@ -3,7 +3,6 @@ package com.example.backend.entities.actors;
 import com.example.backend.entities.order_menu.Order;
 import com.example.backend.entities.reservation.Reservation;
 import jakarta.persistence.*;
-import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -15,7 +14,6 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @Entity
 @Data
 @NoArgsConstructor
@@ -24,7 +22,7 @@ import java.util.List;
 @Table(name = "_user")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @NotBlank(message = "Firstname is mandatory")
@@ -54,9 +52,10 @@ public class User {
 
     @OneToMany(mappedBy = "customer")
     private List<Reservation> reservations = new ArrayList<>();
-
-    /**
-     * Instead of implementing a simple field for customer_name, I`ve decided to add an association between Reservation <-> User classes.
-     * */
-
 }
+
+/**
+ * Instead of implementing a simple field for customer_name, I`ve decided to add an association between Reservation <-> User classes.
+ * */
+
+

@@ -21,13 +21,13 @@ import java.util.Optional;
 public class TableController {
 
     private final TableRepository tableRepository;
-    private final ReservationRepository resRepository;
+    private final ReservationRepository reservationRepository;
     private final OrderRepository orderRepository;
 
     @Autowired
-    public TableController(TableRepository tableRepository, ReservationRepository resRepository, OrderRepository orderRepository) {
+    public TableController(TableRepository tableRepository, ReservationRepository reservationRepository, OrderRepository orderRepository) {
         this.tableRepository = tableRepository;
-        this.resRepository = resRepository;
+        this.reservationRepository = reservationRepository;
         this.orderRepository = orderRepository;
     }
 
@@ -62,13 +62,11 @@ public class TableController {
             table.setSeats_amount(tableDetails.getSeats_amount());
             table.setStatus(tableDetails.getStatus());
 
-            // Clear and update orders
             table.getOrders().clear();
             for (Order order : tableDetails.getOrders()) {
                 table.addOrder(order);
             }
 
-            // Clear and update reservations
             table.getReservations().clear();
             for (Reservation reservation : tableDetails.getReservations()) {
                 table.addReservation(reservation);
@@ -106,6 +104,6 @@ public class TableController {
     @GetMapping("/reservations/today")
     public List<Reservation> getTodaysReservations() {
         LocalDate today = LocalDate.now();
-        return resRepository.findByDate(today);
+        return reservationRepository.findByDate(today);
     }
 }

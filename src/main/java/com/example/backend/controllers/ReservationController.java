@@ -28,10 +28,8 @@ public class ReservationController {
         this.userRepository = userRepository;
     }
 
-    // Create a new reservation
     @PostMapping("/create")
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
-        // Ensure the table and customer exist
         if (tableRepository.existsById(reservation.getTable().getId()) && userRepository.existsById(reservation.getCustomer().getId())) {
             Reservation savedReservation = reservationRepository.save(reservation);
             return ResponseEntity.ok(savedReservation);
@@ -47,7 +45,6 @@ public class ReservationController {
         return reservationRepository.findByDateBetween(startDate, endDate);
     }
 
-    // Get reservations by date
     @GetMapping("/date")
     public List<Reservation> getReservationsByDate(@RequestParam String date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");
@@ -55,20 +52,17 @@ public class ReservationController {
         return reservationRepository.findByDate(localDate);
     }
 
-    // Get all reservations
     @GetMapping("/list")
     public List<Reservation> getAllReservations() {
         return reservationRepository.findAll();
     }
 
-    // Get a reservation by ID
     @GetMapping("/by-id/{id}")
     public ResponseEntity<Reservation> getReservationById(@PathVariable Long id) {
         Optional<Reservation> reservation = reservationRepository.findById(id);
         return reservation.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // Update a reservation by ID
     @PutMapping("/update/{id}")
     public ResponseEntity<Reservation> updateReservation(@PathVariable Long id, @RequestBody Reservation reservationDetails) {
         Optional<Reservation> optionalReservation = reservationRepository.findById(id);
@@ -89,7 +83,6 @@ public class ReservationController {
         }
     }
 
-    // Delete a reservation by ID
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
         if (reservationRepository.existsById(id)) {

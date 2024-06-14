@@ -72,8 +72,7 @@ $$
     DECLARE
         start_date DATE := current_date;
         end_date DATE := '2024-12-31';
-        reservation_id BIGINT := 1; -- Start from 1 since we truncated the table
-        table_count INTEGER;
+        reservation_id BIGINT := 1;
         day_count INTEGER;
         reservation_count INTEGER;
         reservation_date DATE;
@@ -93,11 +92,10 @@ $$
 
         FOR current_day IN 0 .. total_days LOOP
                 reservation_date := start_date + current_day;
-                table_count := (SELECT COUNT(*) FROM _table);
                 reservation_count := FLOOR(1 + RANDOM() * 10);
 
                 FOR day_count IN 1 .. reservation_count LOOP
-                        table_id := FLOOR(1 + RANDOM() * table_count);
+                        table_id := (SELECT id FROM _table ORDER BY RANDOM() LIMIT 1);
                         reservation_time := TIME '10:00' + (random() * (TIME '16:00' - TIME '10:00'))::interval; -- Random time between 10:00 and 02:00
 
                         reservation_type := CASE FLOOR(1 + RANDOM() * 5)
@@ -119,16 +117,21 @@ $$
                         reservation_description := LEFT(reservation_description, 255); -- Ensure it does not exceed 255 characters
 
                         -- Select a random customer_id
-                        customer_id := FLOOR(1 + RANDOM() * customer_count);
+                        customer_id := (SELECT id FROM _user WHERE role = 'Customer' ORDER BY RANDOM() LIMIT 1);
 
-                        INSERT INTO _reservation (id, date, time, reservation_description, reservation_type, table_id, customer_id)
-                        VALUES (reservation_id, reservation_date, reservation_time, reservation_description, reservation_type::reservation_type, table_id, customer_id);
+                        INSERT INTO _reservation (date, time, reservation_description, reservation_type, table_id, customer_id)
+                        VALUES (reservation_date, reservation_time, reservation_description, reservation_type::reservation_type, table_id, customer_id);
 
                         reservation_id := reservation_id + 1;
                     END LOOP;
             END LOOP;
     END
 $$;
+
+select  count(date),count(DISTINCT(date)) || 'distinct' from _reservation where customer_id > 1;
+
+select * from _user;
+
 
 ----------------------------------------------------------------
 ----------------------------------------------------------------
