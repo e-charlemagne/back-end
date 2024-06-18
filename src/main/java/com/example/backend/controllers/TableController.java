@@ -13,13 +13,16 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/tables")
 public class TableController {
-
     private final TableRepository tableRepository;
     private final ReservationRepository reservationRepository;
     private final OrderRepository orderRepository;
@@ -29,6 +32,10 @@ public class TableController {
         this.tableRepository = tableRepository;
         this.reservationRepository = reservationRepository;
         this.orderRepository = orderRepository;
+
+        // Schedule task for checking reservations
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+        scheduler.scheduleAtFixedRate(this::checkReservations, 0, 1, TimeUnit.MINUTES);
     }
 
     @GetMapping
@@ -105,5 +112,20 @@ public class TableController {
     public List<Reservation> getTodaysReservations() {
         LocalDate today = LocalDate.now();
         return reservationRepository.findByDate(today);
+    }
+
+    private void checkReservations() {
+        LocalDateTime now = LocalDateTime.now();
+        List<Reservation> reservations = reservationRepository.findByDateBetween(now.toLocalDate().atStartOfDay(), now.plusDays(1).toLocalDate().atStartOfDay());
+        for (Reservation reservation : reservations) {
+            if (reservation.getDate().atTime(reservation.getTime()).isBefore(now.plusMinutes(15)) &&
+                    reservation.getDate().atTime(reservation.getTime()).isAfter(now)) {
+                Table table = reservation.getTable();
+                if (table.getStatus() == TableStatus.Empty_Now) {
+                    table.setStatus(TableStatus.Reservation_Scheduled);
+                    tableRepository.save(table);
+                }
+            }
+        }
     }
 }

@@ -4,6 +4,7 @@ import com.example.backend.entities.reservation.Reservation;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +19,6 @@ public interface ReservationRepository extends JpaRepository<Reservation,Integer
 
     List<Reservation> findByDate(LocalDate today);
 
-
+    List<Reservation> findByDateBetween(LocalDateTime startDate, LocalDateTime endDate);
     List<Reservation> findByDateBetween(LocalDate startDate, LocalDate endDate);
 }

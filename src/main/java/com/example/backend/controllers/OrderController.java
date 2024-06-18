@@ -1,12 +1,19 @@
 package com.example.backend.controllers;
 
+import com.example.backend.entities.order_menu.Meal;
 import com.example.backend.entities.order_menu.Order;
 import com.example.backend.entities.order_menu.OrderStatus;
+import com.example.backend.entities.statistic.OrderHistory;
+import com.example.backend.entities.table.Table;
+import com.example.backend.entities.table.TableStatus;
+import com.example.backend.repository.OrderHistoryRepository;
 import com.example.backend.repository.OrderRepository;
+import com.example.backend.repository.TableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,10 +21,14 @@ import java.util.Optional;
 @RequestMapping("/orders")
 public class OrderController {
     private final OrderRepository orderRepository;
+    private final TableRepository tableRepository;
+    private final OrderHistoryRepository orderHistoryRepository;
 
     @Autowired
-    public OrderController(OrderRepository orderRepository) {
+    public OrderController(OrderRepository orderRepository, TableRepository tableRepository, OrderHistoryRepository orderHistoryRepository) {
         this.orderRepository = orderRepository;
+        this.tableRepository = tableRepository;
+        this.orderHistoryRepository = orderHistoryRepository;
     }
 
     @GetMapping
@@ -37,6 +48,10 @@ public class OrderController {
             order.setStatus(OrderStatus.New);
             order.setPrice(order.calculateTotalPrice());
             Order savedOrder = orderRepository.save(order);
+
+            // Log the order in the order_history table
+            logOrderHistory(savedOrder);
+
             return ResponseEntity.ok(savedOrder);
         } catch (Exception e) {
             e.printStackTrace();
@@ -55,6 +70,10 @@ public class OrderController {
             order.setStatus(orderDetails.getStatus());
             order.setOrderDate(orderDetails.getOrderDate());
             final Order updatedOrder = orderRepository.save(order);
+
+            // Log the order update in the order_history table
+            logOrderHistory(updatedOrder);
+
             return ResponseEntity.ok(updatedOrder);
         } else {
             return ResponseEntity.notFound().build();
@@ -69,5 +88,20 @@ public class OrderController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    private void logOrderHistory(Order order) {
+        OrderHistory orderHistory = OrderHistory.builder()
+                .order(order)
+                .timestamp(LocalDateTime.now())
+                .status(order.getStatus())
+                .customerName(order.getCustomers().stream().map(c -> c.getFirstname() + " " + c.getLastname()).reduce("", (a, b) -> a + ", " + b))
+                .tableId(order.getTable().getId())
+                .tableName(order.getTable().getName())
+                .tableSeatsAmount(order.getTable().getSeats_amount())
+                .mealNames(order.getMeals().stream().map(Meal::getMeal_name).reduce("", (a, b) -> a + ", " + b))
+                .totalPrice(order.getPrice())
+                .build();
+        orderHistoryRepository.save(orderHistory);
     }
 }

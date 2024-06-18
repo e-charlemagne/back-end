@@ -116,6 +116,19 @@ CREATE TABLE order_customers (
                                  FOREIGN KEY (customer_id) REFERENCES users(id),
                                  PRIMARY KEY (order_id, customer_id)
 );
+CREATE TABLE order_history (
+                               id BIGSERIAL PRIMARY KEY,
+                               order_id BIGINT NOT NULL,
+                               timestamp TIMESTAMP NOT NULL,
+                               status VARCHAR(50) NOT NULL,
+                               customer_name VARCHAR(255) NOT NULL,
+                               table_id BIGINT NOT NULL,
+                               table_name VARCHAR(255) NOT NULL,
+                               table_seats_amount INT NOT NULL,
+                               meal_names TEXT NOT NULL,
+                               total_price NUMERIC(10, 2) NOT NULL,
+                               FOREIGN KEY (order_id) REFERENCES orders(id)
+);
 
 
 

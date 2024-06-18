@@ -2,6 +2,7 @@ package com.example.backend.entities.order_menu;
 
 import com.example.backend.entities.actors.User;
 import com.example.backend.entities.table.Table;
+import com.example.backend.entities.table.TableStatus;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
@@ -63,6 +64,17 @@ public class Order {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
+    @PrePersist
+    public void onPrePersist() {
+        if (this.status == null) {
+            this.status = OrderStatus.New;
+        }
+        if (this.table != null) {
+            this.table.setStatus(TableStatus.Now_Occupied);
+
+        }
+
+    }
 }
     /**
      * Add Taxes_Discounts to the order. My suggestion would be to implement something like
