@@ -49,7 +49,7 @@ public class OrderController {
         Optional<Order> orderOptional = orderRepository.findById(id);
         if (orderOptional.isPresent()) {
             Order order = orderOptional.get();
-            order.setCustomerName(orderDetails.getCustomerName());
+            order.setCustomers(orderDetails.getCustomers());
             order.setMeals(orderDetails.getMeals());
             order.setTable(orderDetails.getTable());
             order.setStatus(orderDetails.getStatus());

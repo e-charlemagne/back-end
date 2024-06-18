@@ -48,10 +48,8 @@ select * from _menu;
 select * from _menusection;
 
 -- Insert meals into the menusections
-INSERT INTO _meal (price, meal_name, meal_description, menu_section_id) VALUES
+INSERT INTO meals (price, meal_name, meal_description, menu_section_id) VALUES
 -- Cold Drinks
-(12.00, 'Coca-Cola Zero Sugar / Coca-Cola Original Taste / Fanta / Sprite / Kinley Tonic Water / Fuze Tea Peach-Hibiscus / Cappy Orange / Cappy Apple', '250ml', 4),
-(12.00, 'Still Water Kropla Beskidu', '330ml', 4),
 (21.00, 'Still Water Kropla Beskidu', '750ml', 4),
 (12.00, 'Sparkling Water Kropla Beskidu', '330ml', 4),
 (21.00, 'Sparkling Water Kropla Beskidu', '750ml', 4),
@@ -186,25 +184,6 @@ INSERT INTO _meal (price, meal_name, meal_description, menu_section_id) VALUES
 (28.00, 'Corona Extra / Corona Zero', '', 25);
 
 
-select COUNT(DISTINCT(title_section)) from _menusection;
-
--- I have misclicked and executed two times inserting the data into DB.
--- Here is the script for removing duplicates.
-
-
-DELETE FROM _menusection menu_section USING (
-    SELECT MIN(CTID) as ctid, title_section, menu_id
-    FROM _menusection
-    GROUP BY title_section, menu_id
-    HAVING COUNT(*) > 1
-) b
-WHERE menu_section.title_section = b.title_section
-  AND menu_section.menu_id = b.menu_id
-  AND menu_section.CTID <> b.ctid;
-
-
-
-select * from _menusection;
 
 
 ----------------------------------------------------INSERTING FOOD-----------------------------------------------------------------------
@@ -256,67 +235,13 @@ DO $$
         END IF;
     END $$;
 
-select * from _menusection where menu_id = 2;
+select * from menu_sections where id  = 5;
 
-select * from _meal where menu_section_id = 54;
-select * from _meal;
+select * from meals;
+-- Insert meals into the menu_sections
 
 
--- Insert meals into the menusections for the "Food" menu
-INSERT INTO _meal (price, meal_name, meal_description, menu_section_id) VALUES
--- Sushi
-(38.00, 'Futomaki Salmon', 'salmon/philadelphia cheese/avocado/cucumber', 48),
-(42.00, 'Futomaki Prawn in tempura', 'prawn/mango/daikon/sriracha mayonnaise', 48),
-(38.00, 'Futomaki Tuna', 'calabash/daikon/mayonnaise/coriander', 48),
-
--- Starters
-(56.00, 'Beef tartare', 'truffle mayonnaise / pickled shallots / crispy capers / shimeji mushrooms / sourdough bread', 49),
-(58.00, 'Tuna tartare', 'Tuna tartare/ avocado/ sesame/ chili soy sauce/ tapioca chips', 49),
-(98.00, 'Cold cuts platter to share', 'meats / cheeses / marinated olives / stuffed peppers / tzatziki', 49),
-(15.00, 'Bread with flavoured butter', 'bread selection / herbs butter', 49),
-(38.00, 'Hummus', 'Hummus/ pickles/ silage/ smoked paprika oil/ pita', 49),
-
--- Snacks
-(98.00, 'Set of snacks', 'panko shrimp / calamari in tempura / onion rings / cream cheese with jalapeno / garlic sauce / tartar sauce / tonkatsu sauce', 50),
-(48.00, 'Bao Ban with duck', 'teriyaki duck / pickled cabbage / sriracha mayonnaise / coriander / roasted sesame', 50),
-(44.00, 'Bao Ban with oyster mushroom', 'oyster mushroom / kimchi / chive mayonnaise / teriyaki / roasted onion', 50),
-(52.00, 'Chinkali', 'Khinkali/ Pork/ Chives emulsion/ Cream Fraiche/ Cucumber', 50),
-(54.00, 'Dim Sum dumplings with prawns', 'hoisin/crispy jalapeno in tempura/spring onion/sesame', 50),
-(52.00, 'Calamari in tempura', 'aioli sauce /lime', 50),
-
--- Salads
-(48.00, 'Chicken Caesar salad', 'farm chicken / romaine lettuce / focaccia', 51),
-(48.00, 'Goat cheese salad', 'caramelized goat cheese / mixed lettuce / candied beetroot / cashew nuts / raspberry dressing', 51),
-(48.00, 'Caprese di burrata', 'baked tomatoes / basil / sun-dried tomato pesto', 51),
-
--- Soups
-(42.00, 'Duck Ramen', 'Ramen/ Duck/ Alkaline Noodles/ Shitake Mushrooms/ Pickled Egg/ Roasted Chilli/ Spring Onions/ Mung Sprouts', 52),
-(36.00, 'Roasted Pepper Cream', 'Roasted Pepper Cream/ Goat Cheese/ Rosemary/ Cream Fraiche', 52),
-
--- Pasta
-(58.00, 'Tagliolini nero', 'shrimps / garlic / chilli / wine / butter', 53),
-(56.00, 'Udon with duck', 'snap peas/peanuts/teriyaki', 53),
-(58.00, 'Riggatoni', 'Rigatoni/ Porcini Mushrooms/ Creamy Sauce/ Chicken/ Truffle Oil', 53),
-
--- Main Dishes
-(52.00, 'Classic Prawns', 'wine / butter / cherry tomatoes / parsley', 54),
-(72.00, 'Duck', 'duck breast Mulard / horseradish puree / beetroot and plum salad', 54),
-(76.00, 'Tuna steak', 'herb risotto / oriental turnip and pineapple salad', 54),
-(120.00, 'Beef steak', 'grilled romaine lettuce / parmesan / buckwheat popcorn / bernaise sauce / pepper sauce / fries', 54),
-(65.00, 'Shrimp burger', 'Shrimp Burger/ Mango Salsa/ Ginger/ Teriyaki Sauce/ Asian Coleslaw / Fries', 54),
-(62.00, 'Chicken', 'corn chicken / cream potatoes / tarragon veloute / morels / goat cheese / pomegranate / spinach', 54),
-(140.00, 'Rib Eye Steak', 'grilled romaine lettuce / parmesan / buckwheat popcorn / bernaise sauce / pepper sauce / fries', 54),
-(58.00, 'Burger', 'cheddar cheese / truffle mayonnaise / pickled cucumber', 54),
-(56.00, 'Prawns with chorizo', 'prawns/ chorizo/ cider/ butter/ parsley', 54),
-(58.00, 'Poke Bowl Shrimp', 'Shrimp/ Tataki/ Guacamole/ Chipotle mayonnaise/ Watermelon turnip/ Daikon/ Pickled Carrot/ Coriander', 54),
-(54.00, 'Poke Bowl Tuna', 'Tuna/ Tataki/ Guacamole/ Chipotle Mayonnaise/ Watermelon Turnip/ Daikon/ Pickled Carrot/ Coriander', 54),
-
--- Desserts
-(50.00, 'Fruits Plate', '', 55),
-(56.00, 'Cheese Plate', 'Gorgonzola/Taleggio/Bursztyn', 55),
-(36.00, 'Peanut cake', 'hazelnut mousse / caramel / chocolate waffle', 55),
-(36.00, 'Meringue', 'cream based on mascarpone cheese / mango / dragon fruit', 55),
-(36.00, 'New York cheesecake', 'Philadelphia cheese / fruit / caramel-nut sprinkle', 55);
+select * from meals;
 
 
 

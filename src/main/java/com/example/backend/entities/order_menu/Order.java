@@ -22,22 +22,19 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@jakarta.persistence.Table(name = "_order")
+@jakarta.persistence.Table(name = "orders")
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Order {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private LocalDateTime orderDate;
 
-    private String customerName;
-
     @ManyToMany
     @JoinTable(
-            name = "order_meal",
+            name = "order_meals",
             joinColumns = @JoinColumn(name = "order_id"),
             inverseJoinColumns = @JoinColumn(name = "meal_id")
     )

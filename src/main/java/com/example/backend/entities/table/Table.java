@@ -14,7 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@jakarta.persistence.Table(name = "_table")
+@jakarta.persistence.Table(name = "restaurant_tables")
 public class Table {
 
     @Id
@@ -27,7 +27,7 @@ public class Table {
     private Integer seats_amount;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status")
+
     private TableStatus status;
 
     @OneToMany(mappedBy = "table", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)

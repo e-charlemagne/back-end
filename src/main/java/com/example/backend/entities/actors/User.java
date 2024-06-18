@@ -19,7 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "_user")
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,8 +54,5 @@ public class User {
     private List<Reservation> reservations = new ArrayList<>();
 }
 
-/**
- * Instead of implementing a simple field for customer_name, I`ve decided to add an association between Reservation <-> User classes.
- * */
 
 

@@ -18,7 +18,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@jakarta.persistence.Table(name = "_reservation")
+@jakarta.persistence.Table(name = "reservations")
 public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,9 +44,4 @@ public class Reservation {
     @ManyToOne
     @JoinColumn(name = "table_id")
     private com.example.backend.entities.table.Table table;
-    /** NAME OF THE CUSTOMER WHO MADE RESERVATION*/
-    /** IMPLEMENT CONFIRMATION FROM CUSTOMER SIDE
-     * WHETHER RESERVATION WAS CONFIRMED.*/
-
-    /**RESERVATION PROPOSITION*/
 }

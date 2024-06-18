@@ -130,7 +130,7 @@ $$;
 
 select  count(date),count(DISTINCT(date)) || 'distinct' from _reservation where customer_id > 1;
 
-select * from _user;
+select * from user;
 
 
 ----------------------------------------------------------------

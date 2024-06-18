@@ -120,3 +120,14 @@ ALTER TABLE order_meal ADD CONSTRAINT fk_meal FOREIGN KEY (meal_id) REFERENCES _
 
 CREATE INDEX idx_customer_name ON _order(customer_name);
 CREATE INDEX idx_meal_name ON _meal(meal_name);
+
+
+ALTER TABLE table RENAME TO restaurant_tables;
+ALTER TABLE user RENAME TO users;
+ALTER TABLE order RENAME TO orders;
+ALTER TABLE reservation RENAME TO reservations;
+ALTER TABLE menu RENAME TO menus;
+ALTER TABLE menusection RENAME TO menu_sections;
+ALTER TABLE meal RENAME TO meals;
+ALTER TABLE order_customers RENAME TO order_customers;
+ALTER TABLE order_meal RENAME TO order_meals;
