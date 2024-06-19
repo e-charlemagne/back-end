@@ -1,10 +1,13 @@
 package com.example.backend;
 
 import com.example.backend.controllers.ReservationController;
+import com.example.backend.entities.actors.User;
 import com.example.backend.entities.reservation.Reservation;
+import com.example.backend.entities.table.Table;
 import com.example.backend.repository.ReservationRepository;
 import com.example.backend.repository.TableRepository;
 import com.example.backend.repository.UserRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -18,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 public class ReservationControllerTest {
@@ -41,14 +45,24 @@ public class ReservationControllerTest {
 
     @Test
     public void testCreateReservation() {
+        Table table = new Table();
+        table.setId(1L);
+
+        User customer = new User();
+        customer.setId(1);
+
         Reservation reservation = new Reservation();
         reservation.setId(1L);
+        reservation.setTable(table);
+        reservation.setCustomer(customer);
+
         when(tableRepository.existsById(reservation.getTable().getId())).thenReturn(true);
         when(userRepository.existsById(reservation.getCustomer().getId())).thenReturn(true);
-        when(reservationRepository.save(reservation)).thenReturn(reservation);
+        when(reservationRepository.save(any(Reservation.class))).thenReturn(reservation);
 
         ResponseEntity<Reservation> response = reservationController.createReservation(reservation);
         assertEquals(200, response.getStatusCodeValue());
+        assertNotNull(response.getBody());
         assertEquals(1L, response.getBody().getId());
     }
 
@@ -105,14 +119,20 @@ public class ReservationControllerTest {
     public void testUpdateReservation() {
         Reservation reservation = new Reservation();
         reservation.setId(1L);
+        reservation.setReservation_description("original");
+
         when(reservationRepository.findById(1L)).thenReturn(Optional.of(reservation));
 
         Reservation updatedReservation = new Reservation();
         updatedReservation.setReservation_description("updated");
 
+        when(reservationRepository.save(any(Reservation.class))).thenReturn(updatedReservation);
+
         ResponseEntity<Reservation> response = reservationController.updateReservation(1L, updatedReservation);
         assertEquals(200, response.getStatusCodeValue());
+        assertNotNull(response.getBody());
         assertEquals("updated", response.getBody().getReservation_description());
+
     }
 
     @Test

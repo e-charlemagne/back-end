@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 public class TableTest {
@@ -95,15 +96,18 @@ public class TableTest {
     public void testUpdateTable() {
         Table table = new Table();
         table.setId(1L);
+        table.setName("original");
         when(tableRepository.findById(1L)).thenReturn(Optional.of(table));
 
         Table updatedTable = new Table();
         updatedTable.setName("updated");
 
+        when(tableRepository.save(any(Table.class))).thenReturn(updatedTable);
+
         ResponseEntity<Table> response = tableController.updateTable(1L, updatedTable);
         assertEquals(200, response.getStatusCodeValue());
-        assertEquals("updated", response.getBody().getName());
-    }
+        assertNotNull(response.getBody());
+        assertEquals("updated", response.getBody().getName());    }
 
     @Test
     public void testDeleteTable() {
