@@ -16,3 +16,9 @@ CREATE TRIGGER trigger_update_table_status_on_reservation
 AFTER INSERT ON reservations
 FOR EACH ROW
 EXECUTE FUNCTION update_table_status_on_reservation();
+
+
+
+
+
+
