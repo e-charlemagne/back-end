@@ -21,11 +21,6 @@ $$
             END LOOP;
     END
 $$;
-
-update users
-set role_id =3
-where role_id =2 ;
+select count(username), count(distinct(username)) from users;
 
 
-select * from roles;
-select * from users;

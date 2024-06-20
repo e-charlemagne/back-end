@@ -11,3 +11,7 @@ CREATE INDEX idx_order_customers_order_id ON order_customers(order_id);
 CREATE INDEX idx_order_customers_customer_id ON order_customers(customer_id);
 CREATE INDEX idx_order_meals_order_id ON order_meals(order_id);
 CREATE INDEX idx_order_meals_meal_id ON order_meals(meal_id);
+
+
+
+select * from users;

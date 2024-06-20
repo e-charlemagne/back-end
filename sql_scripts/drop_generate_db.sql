@@ -25,15 +25,16 @@ CREATE TABLE users (
                        id BIGSERIAL PRIMARY KEY,
                        firstname VARCHAR(255) NOT NULL,
                        lastname VARCHAR(255) NOT NULL,
-                       username VARCHAR(255) NOT NULL,
+                       username VARCHAR(255) UNIQUE NOT NULL,
                        password VARCHAR(255) NOT NULL,
                        email VARCHAR(255) NOT NULL,
                        role_id BIGINT NOT NULL,
                        FOREIGN KEY (role_id) REFERENCES roles(id)
 );
+select * from users;
 
-
-
+alter table users
+add constraint users unique (username);
 -- Create the menus, menu_sections, and meals tables
 CREATE TABLE menus (
                        id BIGSERIAL PRIMARY KEY,

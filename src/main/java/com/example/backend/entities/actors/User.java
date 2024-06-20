@@ -35,6 +35,7 @@ public class User {
 
     @NotBlank(message = "Username is mandatory")
     @Size(min = 1, max = 255)
+    @Column(unique = true)
     private String username;
 
     @NotBlank(message = "Password is mandatory")
@@ -44,8 +45,9 @@ public class User {
     @Email(message = "Email should be valid")
     private String email;
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
+    @ManyToOne
+    @JoinColumn(name = "role_id", nullable = false)
+    private Roles role;
 
     @ManyToMany(mappedBy = "customers")
     private List<Order> orders = new ArrayList<>();
@@ -53,6 +55,3 @@ public class User {
     @OneToMany(mappedBy = "customer")
     private List<Reservation> reservations = new ArrayList<>();
 }
-
-
-
