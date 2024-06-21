@@ -10,8 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Optional;
@@ -34,19 +37,19 @@ public class SecurityIntegrationTest {
     private PasswordEncoder passwordEncoder;
 
     @BeforeEach
+    @Transactional
+    @Rollback
     public void setup() {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-    }
-    @AfterEach
-    public void cleanup() {
-        userRepository.deleteByUsername("test.user");
-    }
-    @Test
-    public void testAuthenticationEndpoint() throws Exception {
         // Ensure the user does not already exist
         Optional<User> existingUser = userRepository.findByUsername("test.user");
         existingUser.ifPresent(userRepository::delete);
+    }
 
+    @Test
+    @Transactional
+    @Rollback
+    public void testAuthenticationEndpoint() throws Exception {
         Roles role = new Roles();
         role.setId(3L);
         role.setRoleName("Customer");
@@ -66,5 +69,12 @@ public class SecurityIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"username\": \"test.user\", \"password\": \"password\"}"))
                 .andExpect(status().isOk());
+    }
+
+    @AfterEach
+    @Transactional
+    @Rollback
+    public void cleanup() {
+        userRepository.deleteByUsername("test.user");
     }
 }

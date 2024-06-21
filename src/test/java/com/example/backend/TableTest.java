@@ -107,7 +107,8 @@ public class TableTest {
         ResponseEntity<Table> response = tableController.updateTable(1L, updatedTable);
         assertEquals(200, response.getStatusCodeValue());
         assertNotNull(response.getBody());
-        assertEquals("updated", response.getBody().getName());    }
+        assertEquals("updated", response.getBody().getName());
+    }
 
     @Test
     public void testDeleteTable() {
@@ -123,14 +124,21 @@ public class TableTest {
 
     @Test
     public void testGetTodaysReservations() {
+        LocalDate today = LocalDate.now();
         Reservation reservation = new Reservation();
-        reservation.setDate(LocalDate.now());
+        reservation.setDate(today);
 
-        when(reservationRepository.findByDate(LocalDate.now())).thenReturn(Arrays.asList(reservation));
+        // Logging before setting up the mock
+        System.out.println("Setting up mock data for today's reservations: " + reservation);
+
+        when(reservationRepository.findByDate(today)).thenReturn(Arrays.asList(reservation));
 
         List<Reservation> result = tableController.getTodaysReservations();
-        assertEquals(1, result.size());
-        assertEquals(LocalDate.now(), result.get(0).getDate());
-    }
 
+        // Logging the results for better understanding
+        System.out.println("Today's Reservations: " + result);
+
+        assertEquals(1, result.size());
+        assertEquals(today, result.get(0).getDate());
+    }
 }
