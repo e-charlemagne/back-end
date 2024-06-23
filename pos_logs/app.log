@@ -38579,3 +38579,59 @@ io.jsonwebtoken.security.SignatureException: JWT signature does not match locall
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
 	at java.base/java.lang.Thread.run(Thread.java:1570) ~[na:na]
 
+2024-06-23T20:49:37.396+02:00 DEBUG 19380 --- [back-end] [http-nio-8080-exec-7] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.email,
+        u1_0.firstname,
+        u1_0.lastname,
+        u1_0.password,
+        u1_0.role_id,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+2024-06-23T20:49:37.398+02:00 DEBUG 19380 --- [back-end] [http-nio-8080-exec-7] org.hibernate.SQL                        : 
+    select
+        r1_0.id,
+        r1_0.role_name 
+    from
+        roles r1_0 
+    where
+        r1_0.id=?
+2024-06-23T20:49:37.400+02:00 DEBUG 19380 --- [back-end] [http-nio-8080-exec-7] o.s.web.servlet.DispatcherServlet        : POST "/reservation/create", parameters={}
+2024-06-23T20:49:37.400+02:00 DEBUG 19380 --- [back-end] [http-nio-8080-exec-7] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.example.backend.controllers.ReservationController#createReservation(Reservation)
+2024-06-23T20:49:37.425+02:00 DEBUG 19380 --- [back-end] [http-nio-8080-exec-7] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to [Reservation(id=null, date=2024-07-01, time=18:00, reservation_description=Dinner Reservation, custom (truncated)...]
+2024-06-23T20:49:37.637+02:00 DEBUG 19380 --- [back-end] [http-nio-8080-exec-7] org.hibernate.SQL                        : 
+    select
+        count(*) 
+    from
+        restaurant_tables t1_0 
+    where
+        t1_0.id=?
+2024-06-23T20:49:37.647+02:00 DEBUG 19380 --- [back-end] [http-nio-8080-exec-7] org.hibernate.SQL                        : 
+    select
+        count(*) 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+2024-06-23T20:49:37.650+02:00 DEBUG 19380 --- [back-end] [http-nio-8080-exec-7] org.hibernate.SQL                        : 
+    select
+        rt1_0.id,
+        rt1_0.type_name 
+    from
+        reservation_types rt1_0 
+    where
+        rt1_0.id=?
+2024-06-23T20:49:37.658+02:00 DEBUG 19380 --- [back-end] [http-nio-8080-exec-7] org.hibernate.SQL                        : 
+    insert 
+    into
+        reservations
+        (customer_id, date, reservation_type_id, reservation_description, table_id, time) 
+    values
+        (?, ?, ?, ?, ?, ?)
+2024-06-23T20:49:37.683+02:00 DEBUG 19380 --- [back-end] [http-nio-8080-exec-7] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2024-06-23T20:49:37.683+02:00 DEBUG 19380 --- [back-end] [http-nio-8080-exec-7] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [Reservation(id=1036, date=2024-07-01, time=18:00, reservation_description=Dinner Reservation, custom (truncated)...]
+2024-06-23T20:49:37.686+02:00 DEBUG 19380 --- [back-end] [http-nio-8080-exec-7] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
