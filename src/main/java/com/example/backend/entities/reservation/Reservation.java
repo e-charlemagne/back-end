@@ -1,7 +1,7 @@
 package com.example.backend.entities.reservation;
 
 import com.example.backend.entities.actors.User;
-import com.example.backend.entities.table.TableStatus;
+import com.example.backend.entities.table.Table;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -37,11 +37,12 @@ public class Reservation {
     @JoinColumn(name = "customer_id")
     private User customer;
 
-    @Enumerated(EnumType.STRING)
+    @ManyToOne
+    @JoinColumn(name = "reservation_type_id")
     @NotNull
     private ReservationType reservationType;
 
     @ManyToOne
     @JoinColumn(name = "table_id")
-    private com.example.backend.entities.table.Table table;
+    private Table table;
 }

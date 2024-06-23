@@ -1,7 +1,9 @@
 package com.example.backend.controllers;
 
 import com.example.backend.entities.reservation.Reservation;
+import com.example.backend.entities.reservation.ReservationType;
 import com.example.backend.repository.ReservationRepository;
+import com.example.backend.repository.ReservationTypeRepository;
 import com.example.backend.repository.TableRepository;
 import com.example.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,21 +20,35 @@ import java.util.Optional;
 public class ReservationController {
 
     private final ReservationRepository reservationRepository;
+    private final ReservationTypeRepository reservationTypeRepository;
     private final TableRepository tableRepository;
     private final UserRepository userRepository;
 
     @Autowired
-    public ReservationController(ReservationRepository reservationRepository, TableRepository tableRepository, UserRepository userRepository) {
+    public ReservationController(ReservationRepository reservationRepository, ReservationTypeRepository reservationTypeRepository, TableRepository tableRepository, UserRepository userRepository) {
         this.reservationRepository = reservationRepository;
+        this.reservationTypeRepository = reservationTypeRepository;
         this.tableRepository = tableRepository;
         this.userRepository = userRepository;
     }
 
     @PostMapping("/create")
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
+        if (reservation.getTable() == null || reservation.getTable().getId() == null ||
+                reservation.getCustomer() == null || reservation.getCustomer().getId() == null ||
+                reservation.getReservationType() == null || reservation.getReservationType().getId() == null) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
         if (tableRepository.existsById(reservation.getTable().getId()) && userRepository.existsById(reservation.getCustomer().getId())) {
-            Reservation savedReservation = reservationRepository.save(reservation);
-            return ResponseEntity.ok(savedReservation);
+            Optional<ReservationType> reservationType = reservationTypeRepository.findById(reservation.getReservationType().getId());
+            if (reservationType.isPresent()) {
+                reservation.setReservationType(reservationType.get());
+                Reservation savedReservation = reservationRepository.save(reservation);
+                return ResponseEntity.ok(savedReservation);
+            } else {
+                return ResponseEntity.badRequest().body(null);
+            }
         } else {
             return ResponseEntity.badRequest().body(null);
         }

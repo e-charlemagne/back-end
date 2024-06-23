@@ -3,8 +3,10 @@ package com.example.backend;
 import com.example.backend.controllers.ReservationController;
 import com.example.backend.entities.actors.User;
 import com.example.backend.entities.reservation.Reservation;
+import com.example.backend.entities.reservation.ReservationType;
 import com.example.backend.entities.table.Table;
 import com.example.backend.repository.ReservationRepository;
+import com.example.backend.repository.ReservationTypeRepository;
 import com.example.backend.repository.TableRepository;
 import com.example.backend.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
@@ -16,6 +18,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +31,9 @@ public class ReservationControllerTest {
 
     @Mock
     private ReservationRepository reservationRepository;
+
+    @Mock
+    private ReservationTypeRepository reservationTypeRepository;
 
     @Mock
     private TableRepository tableRepository;
@@ -45,25 +51,29 @@ public class ReservationControllerTest {
 
     @Test
     public void testCreateReservation() {
+        ReservationType reservationType = new ReservationType(1L, "Birthday");
+        User user = new User();
+        user.setId(1);
         Table table = new Table();
         table.setId(1L);
 
-        User customer = new User();
-        customer.setId(1);
+        when(tableRepository.existsById(1L)).thenReturn(true);
+        when(userRepository.existsById(1)).thenReturn(true);
+        when(reservationTypeRepository.findById(1L)).thenReturn(Optional.of(reservationType));
 
         Reservation reservation = new Reservation();
-        reservation.setId(1L);
+        reservation.setDate(LocalDate.now());
+        reservation.setTime(LocalTime.now());
+        reservation.setReservation_description("Birthday party");
+        reservation.setCustomer(user);
         reservation.setTable(table);
-        reservation.setCustomer(customer);
+        reservation.setReservationType(reservationType);
 
-        when(tableRepository.existsById(reservation.getTable().getId())).thenReturn(true);
-        when(userRepository.existsById(reservation.getCustomer().getId())).thenReturn(true);
-        when(reservationRepository.save(any(Reservation.class))).thenReturn(reservation);
+        when(reservationRepository.save(reservation)).thenReturn(reservation);
 
         ResponseEntity<Reservation> response = reservationController.createReservation(reservation);
         assertEquals(200, response.getStatusCodeValue());
-        assertNotNull(response.getBody());
-        assertEquals(1L, response.getBody().getId());
+        assertEquals("Birthday party", response.getBody().getReservation_description());
     }
 
     @Test
