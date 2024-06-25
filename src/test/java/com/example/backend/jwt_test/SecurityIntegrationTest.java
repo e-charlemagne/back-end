@@ -56,18 +56,18 @@ public class SecurityIntegrationTest {
 
         // Create a user and assign the role
         User user = new User();
-        user.setFirstname("Test");
-        user.setLastname("User");
-        user.setUsername("test.user");
+        user.setFirstname("Test1");
+        user.setLastname("User1");
+        user.setUsername("test.user1");
         user.setPassword(passwordEncoder.encode("password"));
-        user.setEmail("test.user@example.com");
+        user.setEmail("test.user1@example.com");
         user.setRole(role);
 
         userRepository.save(user);
 
         mockMvc.perform(post("/authenticate")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"username\": \"test.user\", \"password\": \"password\"}"))
+                        .content("{\"username\": \"test.user1\", \"password\": \"password\"}"))
                 .andExpect(status().isOk());
     }
 
