@@ -1,7 +1,6 @@
 package com.example.backend.entities.statistic;
 
 import com.example.backend.entities.order_menu.Order;
-import com.example.backend.entities.order_menu.OrderStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,9 +26,6 @@ public class OrderHistory {
     private Order order;
 
     private LocalDateTime timestamp;
-
-    @Enumerated(EnumType.STRING)
-    private OrderStatus status;
 
     private String customerName;
 

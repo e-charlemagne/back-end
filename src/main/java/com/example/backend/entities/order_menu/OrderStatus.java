@@ -1,14 +1,23 @@
 package com.example.backend.entities.order_menu;
 
-public enum OrderStatus {
+import jakarta.persistence.*;
+import lombok.*;
 
-    Paid,  /** Displays that order is paid. It will be used for statistic porpuses*/
-    ReadyToPay,   /** Displays that order is Ready To by paid. It will be used for statistic porpuses*/
-    New,   /** Displays that order is New. This is happening after creating this order. It will be used for statistic porpuses*/
-    In_Progress,   /** Displays that order is In Progress. It means that this staff is working on that order. It will be used for statistic porpuses*/
-    Awaiting_For_Customer ,  /** Displays that order is already on the customers table. It will be used for statistic porpuses*/
-    PENDING,
-    CONFIRMED,
-    CANCELLED,
-    COMPLETED;
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Table(name = "order_status")
+public class OrderStatus {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(unique = true, nullable = false)
+    private String status;
+
+    public OrderStatus(String aNew) {
+        status = aNew;
+    }
 }

@@ -4,8 +4,6 @@ import com.example.backend.entities.order_menu.Meal;
 import com.example.backend.entities.order_menu.Order;
 import com.example.backend.entities.order_menu.OrderStatus;
 import com.example.backend.entities.statistic.OrderHistory;
-import com.example.backend.entities.table.Table;
-import com.example.backend.entities.table.TableStatus;
 import com.example.backend.repository.OrderHistoryRepository;
 import com.example.backend.repository.OrderRepository;
 import com.example.backend.repository.TableRepository;
@@ -45,7 +43,7 @@ public class OrderController {
     @PostMapping("/post-order")
     public ResponseEntity<?> createOrder(@RequestBody Order order) {
         try {
-            order.setStatus(OrderStatus.New);
+            order.setStatus(new OrderStatus("New"));
             order.setPrice(order.calculateTotalPrice());
             Order savedOrder = orderRepository.save(order);
 
@@ -94,11 +92,10 @@ public class OrderController {
         OrderHistory orderHistory = OrderHistory.builder()
                 .order(order)
                 .timestamp(LocalDateTime.now())
-                .status(order.getStatus())
                 .customerName(order.getCustomers().stream().map(c -> c.getFirstname() + " " + c.getLastname()).reduce("", (a, b) -> a + ", " + b))
                 .tableId(order.getTable().getId())
                 .tableName(order.getTable().getName())
-                .tableSeatsAmount(order.getTable().getSeats_amount())
+                .tableSeatsAmount(order.getTable().getSeatsAmount())
                 .mealNames(order.getMeals().stream().map(Meal::getMeal_name).reduce("", (a, b) -> a + ", " + b))
                 .totalPrice(order.getPrice())
                 .build();

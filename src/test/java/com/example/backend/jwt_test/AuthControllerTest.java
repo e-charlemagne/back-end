@@ -4,7 +4,7 @@ import com.example.backend.entities.actors.Roles;
 import com.example.backend.entities.actors.User;
 import com.example.backend.jwt.*;
 import com.example.backend.repository.UserRepository;
-import com.example.backend.repository.RolesRepository;  // Import RolesRepository
+import com.example.backend.repository.RolesRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +12,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -34,7 +36,7 @@ public class AuthControllerTest {
     private UserRepository userRepository;
 
     @MockBean
-    private RolesRepository rolesRepository;  // Mock RolesRepository
+    private RolesRepository rolesRepository;
 
     @MockBean
     private MyUserDetailsService myUserDetailsService;
@@ -44,6 +46,10 @@ public class AuthControllerTest {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @MockBean
+    private AuthenticationManager authenticationManager;
+
 
     private User user;
 
@@ -55,18 +61,21 @@ public class AuthControllerTest {
 
         user = new User();
         user.setId(1);
-        user.setFirstname("Test");
-        user.setLastname("User");
-        user.setUsername("test.user");
-        user.setPassword(passwordEncoder.encode("password"));
-        user.setEmail("test.user@example.com");
+        user.setFirstname("Yevhenii1");
+        user.setLastname("Siryi1");
+        user.setUsername("yevhenii.siryi");
+        user.setPassword(passwordEncoder.encode("admin"));
+        user.setEmail("yevhenii.siryi@example.com");
         user.setRole(role);
 
-        when(rolesRepository.findByRoleName("Customer")).thenReturn(Optional.of(role));  // Mock findByRoleName
+        when(rolesRepository.findByRoleName("Customer")).thenReturn(Optional.of(role));
     }
 
     @Test
     public void testCreateAuthenticationToken() throws Exception {
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                .thenReturn(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword(), new ArrayList<>()));
+
         when(myUserDetailsService.loadUserByUsername(any())).thenReturn(
                 new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), new ArrayList<>())
         );
@@ -79,6 +88,7 @@ public class AuthControllerTest {
                 .andExpect(status().isOk());
     }
 
+
     @Test
     public void testRegisterUser() throws Exception {
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
@@ -88,7 +98,7 @@ public class AuthControllerTest {
 
         mockMvc.perform(post("/register")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"firstname\": \"Test\", \"lastname\": \"User\", \"username\": \"test.user\", \"password\": \"password\", \"email\": \"test.user@example.com\"}"))
+                        .content("{\"firstname\": \"Yevhenii\", \"lastname\": \"Siryi\", \"username\": \"yevhenii.siryi\", \"password\": \"ysiryi\", \"email\": \"yevhenii.siryi@example.com\"}"))
                 .andExpect(status().isOk());
     }
 }

@@ -7,6 +7,7 @@ import com.example.backend.entities.table.TableStatus;
 import com.example.backend.repository.OrderRepository;
 import com.example.backend.repository.ReservationRepository;
 import com.example.backend.repository.TableRepository;
+import com.example.backend.repository.TableStatusRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -24,6 +25,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 public class TableTest {
+
+    @Mock
+    private TableStatusRepository tableStatusRepository;
 
     @Mock
     private TableRepository tableRepository;
@@ -59,14 +63,16 @@ public class TableTest {
 
     @Test
     public void testGetAvailableTables() {
+        TableStatus emptyNowStatus = new TableStatus(1L, "Empty_Now");
         Table table = new Table();
-        table.setStatus(TableStatus.Empty_Now);
+        table.setStatus(emptyNowStatus);
 
-        when(tableRepository.findByStatus(TableStatus.Empty_Now)).thenReturn(Arrays.asList(table));
+        when(tableStatusRepository.findByStatus("Empty_Now")).thenReturn(Optional.of(emptyNowStatus));
+        when(tableRepository.findByStatus(emptyNowStatus)).thenReturn(Arrays.asList(table));
 
         List<Table> result = tableController.getAvailableTables();
         assertEquals(1, result.size());
-        assertEquals(TableStatus.Empty_Now, result.get(0).getStatus());
+        assertEquals("Empty_Now", result.get(0).getStatus().getStatus());
     }
 
     @Test
@@ -114,7 +120,7 @@ public class TableTest {
     public void testDeleteTable() {
         Table table = new Table();
         table.setId(1L);
-        table.setStatus(TableStatus.Empty_Now);
+        table.setStatus(new TableStatus(1L, "Empty_Now"));
         when(tableRepository.findById(1L)).thenReturn(Optional.of(table));
 
         ResponseEntity<String> response = tableController.deleteTable(1L);

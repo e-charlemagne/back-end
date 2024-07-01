@@ -2,7 +2,6 @@ package com.example.backend.entities.order_menu;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,9 +20,8 @@ import java.util.Set;
 public class Meal {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
 
     private BigDecimal price;
 
@@ -40,5 +38,5 @@ public class Meal {
     @ManyToMany(mappedBy = "meals")
     private Set<Order> orders = new HashSet<>();
 
-    // allergens field;
+    private String allergens;
 }

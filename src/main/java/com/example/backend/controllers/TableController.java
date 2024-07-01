@@ -7,6 +7,7 @@ import com.example.backend.entities.table.TableStatus;
 import com.example.backend.repository.OrderRepository;
 import com.example.backend.repository.ReservationRepository;
 import com.example.backend.repository.TableRepository;
+import com.example.backend.repository.TableStatusRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,12 +27,14 @@ public class TableController {
     private final TableRepository tableRepository;
     private final ReservationRepository reservationRepository;
     private final OrderRepository orderRepository;
+    private final TableStatusRepository tableStatusRepository;
 
     @Autowired
-    public TableController(TableRepository tableRepository, ReservationRepository reservationRepository, OrderRepository orderRepository) {
+    public TableController(TableRepository tableRepository, ReservationRepository reservationRepository, OrderRepository orderRepository, TableStatusRepository tableStatusRepository) {
         this.tableRepository = tableRepository;
         this.reservationRepository = reservationRepository;
         this.orderRepository = orderRepository;
+        this.tableStatusRepository = tableStatusRepository;
 
         // Schedule task for checking reservations
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
@@ -45,7 +48,8 @@ public class TableController {
 
     @GetMapping("/available")
     public List<Table> getAvailableTables() {
-        return tableRepository.findByStatus(TableStatus.Empty_Now);
+        TableStatus emptyStatus = tableStatusRepository.findByStatus("Empty_Now").orElseThrow();
+        return tableRepository.findByStatus(emptyStatus);
     }
 
     @PostMapping
@@ -66,7 +70,7 @@ public class TableController {
         if (optionalTable.isPresent()) {
             Table table = optionalTable.get();
             table.setName(tableDetails.getName());
-            table.setSeats_amount(tableDetails.getSeats_amount());
+            table.setSeatsAmount(tableDetails.getSeatsAmount());
             table.setStatus(tableDetails.getStatus());
 
             table.getOrders().clear();
@@ -98,7 +102,7 @@ public class TableController {
         Optional<Table> optionalTable = tableRepository.findById(id);
         if (optionalTable.isPresent()) {
             Table table = optionalTable.get();
-            if (table.getStatus() == TableStatus.Now_Occupied) {
+            if (table.getStatus().getStatus().equals("Now_Occupied")) {
                 return ResponseEntity.status(400).body("Table is currently occupied and cannot be deleted.");
             }
             tableRepository.deleteById(id);
@@ -120,10 +124,12 @@ public class TableController {
         for (Reservation reservation : reservations) {
             if (reservation.getDate().atTime(reservation.getTime()).isBefore(now.plusMinutes(15)) &&
                     reservation.getDate().atTime(reservation.getTime()).isAfter(now)) {
-                Table table = reservation.getTable();
-                if (table.getStatus() == TableStatus.Empty_Now) {
-                    table.setStatus(TableStatus.Reservation_Scheduled);
-                    tableRepository.save(table);
+                for (Table table : reservation.getTables()) {
+                    if (table.getStatus().getStatus().equals("Empty_Now")) {
+                        TableStatus reservationScheduledStatus = tableStatusRepository.findByStatus("Reservation_Scheduled").orElseThrow();
+                        table.setStatus(reservationScheduledStatus);
+                        tableRepository.save(table);
+                    }
                 }
             }
         }

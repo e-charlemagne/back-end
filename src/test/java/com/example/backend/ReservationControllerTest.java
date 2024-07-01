@@ -9,7 +9,6 @@ import com.example.backend.repository.ReservationRepository;
 import com.example.backend.repository.ReservationTypeRepository;
 import com.example.backend.repository.TableRepository;
 import com.example.backend.repository.UserRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -19,9 +18,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -64,16 +61,18 @@ public class ReservationControllerTest {
         Reservation reservation = new Reservation();
         reservation.setDate(LocalDate.now());
         reservation.setTime(LocalTime.now());
-        reservation.setReservation_description("Birthday party");
+        reservation.setReservationDescription("Birthday party");
         reservation.setCustomer(user);
-        reservation.setTable(table);
+        Set<Table> tables = new HashSet<>();
+        tables.add(table);
+        reservation.setTables(tables);
         reservation.setReservationType(reservationType);
 
         when(reservationRepository.save(reservation)).thenReturn(reservation);
 
         ResponseEntity<Reservation> response = reservationController.createReservation(reservation);
         assertEquals(200, response.getStatusCodeValue());
-        assertEquals("Birthday party", response.getBody().getReservation_description());
+        assertEquals("Birthday party", Objects.requireNonNull(response.getBody()).getReservationDescription());
     }
 
     @Test
@@ -81,7 +80,7 @@ public class ReservationControllerTest {
         Reservation reservation = new Reservation();
         reservation.setDate(LocalDate.of(2024, 6, 18));
         when(reservationRepository.findByDateBetween(any(LocalDate.class), any(LocalDate.class)))
-                .thenReturn(Arrays.asList(reservation));
+                .thenReturn(List.of(reservation));
 
         List<Reservation> result = reservationController.getReservationsByMonth(2024, 6);
         assertEquals(1, result.size());
@@ -122,26 +121,26 @@ public class ReservationControllerTest {
 
         ResponseEntity<Reservation> response = reservationController.getReservationById(1L);
         assertEquals(200, response.getStatusCodeValue());
-        assertEquals(1L, response.getBody().getId());
+        assertEquals(1L, Objects.requireNonNull(response.getBody()).getId());
     }
 
     @Test
     public void testUpdateReservation() {
         Reservation reservation = new Reservation();
         reservation.setId(1L);
-        reservation.setReservation_description("original");
+        reservation.setReservationDescription("original");
 
         when(reservationRepository.findById(1L)).thenReturn(Optional.of(reservation));
 
         Reservation updatedReservation = new Reservation();
-        updatedReservation.setReservation_description("updated");
+        updatedReservation.setReservationDescription("updated");
 
         when(reservationRepository.save(any(Reservation.class))).thenReturn(updatedReservation);
 
         ResponseEntity<Reservation> response = reservationController.updateReservation(1L, updatedReservation);
         assertEquals(200, response.getStatusCodeValue());
         assertNotNull(response.getBody());
-        assertEquals("updated", response.getBody().getReservation_description());
+        assertEquals("updated", response.getBody().getReservationDescription());
 
     }
 
@@ -161,7 +160,7 @@ public class ReservationControllerTest {
         Reservation reservation = new Reservation();
         reservation.setDate(LocalDate.now());
 
-        when(reservationRepository.findByDate(LocalDate.now())).thenReturn(Arrays.asList(reservation));
+        when(reservationRepository.findByDate(LocalDate.now())).thenReturn(List.of(reservation));
 
         List<Reservation> result = reservationController.getTodaysReservations();
         assertEquals(1, result.size());

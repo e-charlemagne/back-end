@@ -11,4 +11,6 @@ import java.util.Optional;
 public interface TableRepository extends JpaRepository<Table, Long> {
 
     List<Table> findByStatus(TableStatus tableStatus);
+
+
 }

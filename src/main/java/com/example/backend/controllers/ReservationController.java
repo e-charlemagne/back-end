@@ -34,13 +34,12 @@ public class ReservationController {
 
     @PostMapping("/create")
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
-        if (reservation.getTable() == null || reservation.getTable().getId() == null ||
-                reservation.getCustomer() == null || reservation.getCustomer().getId() == null ||
+        if (reservation.getCustomer() == null || reservation.getCustomer().getId() == null ||
                 reservation.getReservationType() == null || reservation.getReservationType().getId() == null) {
             return ResponseEntity.badRequest().body(null);
         }
 
-        if (tableRepository.existsById(reservation.getTable().getId()) && userRepository.existsById(reservation.getCustomer().getId())) {
+        if (userRepository.existsById(reservation.getCustomer().getId())) {
             Optional<ReservationType> reservationType = reservationTypeRepository.findById(reservation.getReservationType().getId());
             if (reservationType.isPresent()) {
                 reservation.setReservationType(reservationType.get());
@@ -87,9 +86,9 @@ public class ReservationController {
             Reservation reservation = optionalReservation.get();
             reservation.setDate(reservationDetails.getDate());
             reservation.setTime(reservationDetails.getTime());
-            reservation.setReservation_description(reservationDetails.getReservation_description());
+            reservation.setReservationDescription(reservationDetails.getReservationDescription());
             reservation.setReservationType(reservationDetails.getReservationType());
-            reservation.setTable(reservationDetails.getTable());
+            reservation.setTables(reservationDetails.getTables());
             reservation.setCustomer(reservationDetails.getCustomer());
 
             Reservation updatedReservation = reservationRepository.save(reservation);

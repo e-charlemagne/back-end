@@ -1,3 +1,5 @@
+-- reservation_generation_script.sql
+
 DO
 $$
     DECLARE
@@ -61,8 +63,14 @@ $$
                             RAISE EXCEPTION 'No customer found with role User';
                         END IF;
 
-                        INSERT INTO reservations (date, time, reservation_description, table_id, customer_id, reservation_type_id)
-                        VALUES (reservation_date, reservation_time, reservation_description, table_id, customer_id, (SELECT id FROM reservation_types WHERE type_name = reservation_type));
+                        -- Insert reservation
+                        INSERT INTO reservations (date, time, reservation_description, customer_id, reservation_type_id)
+                        VALUES (reservation_date, reservation_time, reservation_description, customer_id, (SELECT id FROM reservation_types WHERE type_name = reservation_type))
+                        RETURNING id INTO reservation_id;
+
+                        -- Assign table to reservation
+                        INSERT INTO reservation_tables (reservation_id, table_id)
+                        VALUES (reservation_id, table_id);
 
                         reservation_id := reservation_id + 1;
                     END LOOP;
@@ -70,7 +78,5 @@ $$
     END
 $$;
 
-select * from reservations;
-
-select * from reservations where exists(null);
-
+select Count(*) from reservations;
+select * from reservation_tables;

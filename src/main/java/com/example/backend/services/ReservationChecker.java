@@ -24,17 +24,21 @@ public class ReservationChecker {
 
     @Scheduled(fixedRate = 60000) // Run every minute
     public void checkReservations() {
-        LocalDateTime now = LocalDateTime.now();
-        List<Reservation> reservations = reservationRepository.findByDateBetween(now.toLocalDate().atStartOfDay(), now.plusDays(1).toLocalDate().atStartOfDay());
-        for (Reservation reservation : reservations) {
-            if (reservation.getDate().atTime(reservation.getTime()).isBefore(now.plusMinutes(15)) &&
-                    reservation.getDate().atTime(reservation.getTime()).isAfter(now)) {
-                Table table = reservation.getTable();
-                if (table.getStatus() == TableStatus.Empty_Now) {
-                    table.setStatus(TableStatus.Reservation_Scheduled);
-                    tableRepository.save(table);
+        try {
+            LocalDateTime now = LocalDateTime.now();
+            List<Reservation> reservations = reservationRepository.findByDateBetween(now.toLocalDate().atStartOfDay(), now.plusDays(1).toLocalDate().atStartOfDay());
+            for (Reservation reservation : reservations) {
+                if (reservation.getDate().atTime(reservation.getTime()).isBefore(now.plusMinutes(15)) &&
+                        reservation.getDate().atTime(reservation.getTime()).isAfter(now)) {
+                    Table table = reservation.getTables().iterator().next(); // Assuming single table per reservation for simplicity
+                    if (table.getStatus().getStatus().equals("Empty_Now")) {
+                        table.setStatus(new TableStatus(2L, "Reservation_Scheduled"));
+                        tableRepository.save(table);
+                    }
                 }
             }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }

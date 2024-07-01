@@ -1,6 +1,5 @@
 package com.example.backend.controllers;
 
-import com.example.backend.entities.actors.Roles;
 import com.example.backend.entities.actors.User;
 import com.example.backend.jwt.MyUserDetailsService;
 import com.example.backend.repository.UserRepository;
@@ -25,7 +24,6 @@ public class UserController {
 
     @GetMapping("/user-list")
     public List<User> getAllUsers() {
-        System.out.println("Showing the list of users");
         return userRepository.findAll();
     }
 
@@ -37,7 +35,6 @@ public class UserController {
     @PostMapping("/adding-user")
     public ResponseEntity<User> addUser(@RequestBody User user) {
         User savedUser = myUserDetailsService.save(user);
-        System.out.println("User has been added");
         return ResponseEntity.ok(savedUser);
     }
 
@@ -45,10 +42,8 @@ public class UserController {
     public ResponseEntity<?> deleteUserByUserName(@PathVariable String username) {
         if (userRepository.findByUsername(username).isPresent()) {
             userRepository.deleteByUsername(username);
-            System.out.println("Return 200 response if that was successfully deleted.");
             return ResponseEntity.ok().build();
         }
-        System.out.println("Return 404 Not Found if the user doesn't exist");
         return ResponseEntity.notFound().build();
     }
 

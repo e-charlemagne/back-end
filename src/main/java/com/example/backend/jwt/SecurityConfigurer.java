@@ -32,6 +32,11 @@ public class SecurityConfigurer {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/authenticate", "/register").permitAll()
+                        .requestMatchers("/dashboard").hasAnyRole("Admin", "Receptionist", "Owner", "Manager", "User", "Customer")
+                        .requestMatchers("/menu/**").hasAnyRole("Admin", "Bartender", "Owner", "Manager")
+                        .requestMatchers("/orders/**").hasAnyRole("Admin", "Bartender", "Owner", "Manager")
+                        .requestMatchers("/reservation/**").hasAnyRole("Admin", "Receptionist", "Owner", "Manager")
+                        .requestMatchers("/tables/**").hasAnyRole("Admin", "Owner", "Manager")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

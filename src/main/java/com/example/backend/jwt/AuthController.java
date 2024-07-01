@@ -4,7 +4,6 @@ import com.example.backend.entities.actors.Roles;
 import com.example.backend.entities.actors.User;
 import com.example.backend.repository.RolesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,10 +22,10 @@ public class AuthController {
     private JwtUtil jwtUtil;
 
     @Autowired
-    private MyUserDetailsService userDetailsService; //  inject the MyUserDetailsService
+    private MyUserDetailsService userDetailsService;
 
     @Autowired
-    private RolesRepository rolesRepository;  // inject the RolesRepository
+    private RolesRepository rolesRepository;
 
     @PostMapping("/authenticate")
     public String createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
@@ -42,20 +41,18 @@ public class AuthController {
         final UserDetails userDetails = userDetailsService
                 .loadUserByUsername(authenticationRequest.getUsername());
 
-        return jwtUtil.generateToken(userDetails);
+        String token = jwtUtil.generateToken(userDetails);
+        System.out.println("Generated JWT: " + token);
+
+        return token;
     }
 
     @PostMapping("/register")
     public String registerUser(@RequestBody User user) {
-        // Fetch the role from the database (for example, Customer role)
-
         Roles customerRole = rolesRepository
                 .findByRoleName("Customer")
                 .orElseThrow(() -> new IllegalStateException("Role not found"));
-
-        // Set the role to the user
         user.setRole(customerRole);
-
         userDetailsService.save(user);
         return "User registered successfully";
     }

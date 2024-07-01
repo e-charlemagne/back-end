@@ -1,3 +1,6 @@
+-- indexes.sql
+
+
 -- Create indexes
 CREATE INDEX idx_orders_customer_id ON orders(customer_id);
 CREATE INDEX idx_meals_name ON meals(meal_name);
@@ -13,5 +16,7 @@ CREATE INDEX idx_order_meals_order_id ON order_meals(order_id);
 CREATE INDEX idx_order_meals_meal_id ON order_meals(meal_id);
 
 
+select * from roles;
 
 select * from users;
+

@@ -2,10 +2,9 @@
 DROP SCHEMA public CASCADE;
 CREATE SCHEMA public;
 
--- Create Enum Types
-CREATE TYPE table_status AS ENUM ('Now_Occupied', 'Reservation_Scheduled', 'Empty_Now', 'Disabled');
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
--- Create the roles and reservation types table separately for better normalization
+-- Create roles and reservation_types table separately for better normalization
 CREATE TABLE roles (
                        id BIGSERIAL PRIMARY KEY,
                        role_name VARCHAR(50) UNIQUE NOT NULL
@@ -16,11 +15,25 @@ CREATE TABLE reservation_types (
                                    type_name VARCHAR(50) UNIQUE NOT NULL
 );
 
--- Insert roles and reservation types
+-- Create table_status table
+CREATE TABLE table_status (
+                              id BIGSERIAL PRIMARY KEY,
+                              status VARCHAR(50) UNIQUE NOT NULL
+);
+
+-- Create order_status table
+CREATE TABLE order_status (
+                              id BIGSERIAL PRIMARY KEY,
+                              status VARCHAR(50) UNIQUE NOT NULL
+);
+
+-- Insert roles, reservation_types, table_status, and order_status
 INSERT INTO roles (role_name) VALUES ('Admin'), ('User'), ('Customer'), ('Receptionist'), ('Bartender'), ('Owner'), ('Manager');
 INSERT INTO reservation_types (type_name) VALUES ('Birthday'), ('Date'), ('Celebration'), ('Networking'), ('Conference');
+INSERT INTO table_status (status) VALUES ('Now_Occupied'), ('Reservation_Scheduled'), ('Empty_Now'), ('Disabled');
+INSERT INTO order_status (status) VALUES ('Paid'), ('ReadyToPay'), ('New'), ('In_Progress'), ('Awaiting_For_Customer'), ('PENDING'), ('CONFIRMED'), ('CANCELLED'), ('COMPLETED');
 
--- Create the users table with a foreign key reference to roles
+-- Create users table
 CREATE TABLE users (
                        id BIGSERIAL PRIMARY KEY,
                        firstname VARCHAR(255) NOT NULL,
@@ -28,14 +41,11 @@ CREATE TABLE users (
                        username VARCHAR(255) UNIQUE NOT NULL,
                        password VARCHAR(255) NOT NULL,
                        email VARCHAR(255) NOT NULL,
-                       role_id BIGINT NOT NULL,
+                       role_id BIGINT,
                        FOREIGN KEY (role_id) REFERENCES roles(id)
 );
-select * from users;
 
-alter table users
-add constraint users unique (username);
--- Create the menus, menu_sections, and meals tables
+-- Create menus, menu_sections, and meals tables
 CREATE TABLE menus (
                        id BIGSERIAL PRIMARY KEY,
                        title VARCHAR(255) NOT NULL
@@ -53,39 +63,32 @@ CREATE TABLE meals (
                        price NUMERIC(10, 2) NOT NULL,
                        meal_name VARCHAR(255) NOT NULL,
                        meal_description VARCHAR(255) NOT NULL,
+                       allergens VARCHAR(255),
                        menu_section_id BIGINT NOT NULL,
                        FOREIGN KEY (menu_section_id) REFERENCES menu_sections(id)
 );
-alter table meals
-    add column allergens varchar(255);
 
-select * from meals;
--- Create the restaurant_tables table
+-- Create restaurant_tables table
 CREATE TABLE restaurant_tables (
                                    id BIGSERIAL PRIMARY KEY,
                                    name VARCHAR(255) NOT NULL,
                                    seats_amount INT,
-                                   status table_status DEFAULT 'Disabled'
+                                   status_id BIGINT NOT NULL,
+                                   FOREIGN KEY (status_id) REFERENCES table_status(id)
 );
-select * from roles;
--- Create the orders and order_meals tables
+
+-- Create orders and order_meals tables
 CREATE TABLE orders (
                         id BIGSERIAL PRIMARY KEY,
                         order_date TIMESTAMP NOT NULL,
                         customer_id BIGINT NOT NULL,
                         price NUMERIC(10, 2) NOT NULL,
                         table_id BIGINT NOT NULL,
-                        status VARCHAR(50) NOT NULL,
+                        status_id BIGINT NOT NULL,
                         FOREIGN KEY (customer_id) REFERENCES users(id),
-                        FOREIGN KEY (table_id) REFERENCES restaurant_tables(id)
+                        FOREIGN KEY (table_id) REFERENCES restaurant_tables(id),
+                        FOREIGN KEY (status_id) REFERENCES order_status(id)
 );
-
-select * from orders;
-
-select  o.customer_id, c.id AS orderid, c.firstname,c.lastname from orders o, users c
-where o.customer_id = c.id;
-
-
 
 CREATE TABLE order_meals (
                              order_id BIGINT NOT NULL,
@@ -95,21 +98,28 @@ CREATE TABLE order_meals (
                              PRIMARY KEY (order_id, meal_id)
 );
 
--- Create the reservations table with a foreign key reference to reservation_types
+-- Create reservations table with a foreign key reference to reservation_types
 CREATE TABLE reservations (
                               id BIGSERIAL PRIMARY KEY,
                               date DATE NOT NULL,
                               time TIME NOT NULL,
                               reservation_description VARCHAR(255) NOT NULL,
-                              table_id BIGINT NOT NULL,
                               customer_id BIGINT NOT NULL,
                               reservation_type_id BIGINT NOT NULL,
-                              FOREIGN KEY (table_id) REFERENCES restaurant_tables(id),
                               FOREIGN KEY (customer_id) REFERENCES users(id),
                               FOREIGN KEY (reservation_type_id) REFERENCES reservation_types(id)
 );
 
--- Create many-to-many relationships for users and reservations/orders
+-- Create many-to-many relationship table for reservations and tables
+CREATE TABLE reservation_tables (
+                                    reservation_id BIGINT NOT NULL,
+                                    table_id BIGINT NOT NULL,
+                                    FOREIGN KEY (reservation_id) REFERENCES reservations(id),
+                                    FOREIGN KEY (table_id) REFERENCES restaurant_tables(id),
+                                    PRIMARY KEY (reservation_id, table_id)
+);
+
+-- Create many-to-many relationship tables for users and reservations/orders
 CREATE TABLE order_customers (
                                  order_id BIGINT NOT NULL,
                                  customer_id BIGINT NOT NULL,
@@ -117,27 +127,30 @@ CREATE TABLE order_customers (
                                  FOREIGN KEY (customer_id) REFERENCES users(id),
                                  PRIMARY KEY (order_id, customer_id)
 );
+
 CREATE TABLE order_history (
                                id BIGSERIAL PRIMARY KEY,
                                order_id BIGINT NOT NULL,
                                timestamp TIMESTAMP NOT NULL,
-                               status VARCHAR(50) NOT NULL,
+                               status_id BIGINT NOT NULL,
                                customer_name VARCHAR(255) NOT NULL,
                                table_id BIGINT NOT NULL,
                                table_name VARCHAR(255) NOT NULL,
                                table_seats_amount INT NOT NULL,
                                meal_names TEXT NOT NULL,
                                total_price NUMERIC(10, 2) NOT NULL,
-                               FOREIGN KEY (order_id) REFERENCES orders(id)
+                               FOREIGN KEY (order_id) REFERENCES orders(id),
+                               FOREIGN KEY (status_id) REFERENCES order_status(id)
 );
 
 -- Create indexes
 CREATE INDEX idx_orders_customer_id ON orders(customer_id);
 CREATE INDEX idx_meals_name ON meals(meal_name);
 CREATE INDEX idx_reservations_customer_id ON reservations(customer_id);
-CREATE INDEX idx_reservations_table_id ON reservations(table_id);
 CREATE INDEX idx_orders_table_id ON orders(table_id);
 CREATE INDEX idx_menu_sections_menu_id ON menu_sections(menu_id);
 CREATE INDEX idx_meals_menu_section_id ON meals(menu_section_id);
 CREATE INDEX idx_order_meals_order_id ON order_meals(order_id);
 CREATE INDEX idx_order_meals_meal_id ON order_meals(meal_id);
+CREATE INDEX idx_order_customers_order_id ON order_customers(order_id);
+CREATE INDEX idx_order_customers_customer_id ON order_customers(customer_id);

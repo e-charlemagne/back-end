@@ -42,7 +42,7 @@ public class SecurityIntegrationTest {
     public void setup() {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         // Ensure the user does not already exist
-        Optional<User> existingUser = userRepository.findByUsername("test.user");
+        Optional<User> existingUser = userRepository.findByUsername("test.user1");
         existingUser.ifPresent(userRepository::delete);
     }
 
@@ -75,6 +75,6 @@ public class SecurityIntegrationTest {
     @Transactional
     @Rollback
     public void cleanup() {
-        userRepository.deleteByUsername("test.user");
+        userRepository.deleteByUsername("test.user1");
     }
 }

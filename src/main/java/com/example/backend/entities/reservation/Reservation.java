@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Data
@@ -31,7 +33,7 @@ public class Reservation {
     private LocalTime time;
 
     @NotBlank
-    private String reservation_description;
+    private String reservationDescription;
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
@@ -42,7 +44,16 @@ public class Reservation {
     @NotNull
     private ReservationType reservationType;
 
-    @ManyToOne
-    @JoinColumn(name = "table_id")
-    private Table table;
+    @ManyToMany
+    @JoinTable(
+            name = "reservation_tables",
+            joinColumns = @JoinColumn(name = "reservation_id"),
+            inverseJoinColumns = @JoinColumn(name = "table_id")
+    )
+    private Set<Table> tables = new HashSet<>();
+
+    public Table getTable() {
+        return tables.iterator().next();
+    }
+
 }

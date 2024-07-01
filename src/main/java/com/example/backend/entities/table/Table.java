@@ -17,21 +17,22 @@ import java.util.Set;
 @jakarta.persistence.Table(name = "restaurant_tables")
 public class Table {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank(message = "name is needed")
     private String name;
 
-    private Integer seats_amount;
+    private Integer seatsAmount;
 
-    @Enumerated(EnumType.STRING)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "status_id", nullable = false)
     private TableStatus status;
 
     @OneToMany(mappedBy = "table", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<Order> orders = new HashSet<>();
 
-    @OneToMany(mappedBy = "table", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "tables")
     private Set<Reservation> reservations = new HashSet<>();
 
     public void addOrder(Order order) {
@@ -46,24 +47,17 @@ public class Table {
 
     public void addReservation(Reservation reservation) {
         reservations.add(reservation);
-        reservation.setTable(this);
+        reservation.getTables().add(this);
     }
 
     public void removeReservation(Reservation reservation) {
         reservations.remove(reservation);
-        reservation.setTable(null);
+        reservation.getTables().remove(this);
     }
 
-    public Table(Long id) {
-        this.id = id;
-    }
-
-
-    // Prevent further updates if status is Now_Occupied or Reservation_Scheduled
     @PreUpdate
     public void onPreUpdate() {
-        if (this.status == TableStatus.Now_Occupied || this.status == TableStatus.Reservation_Scheduled) {
-
+        if (this.status.getStatus().equals("Now_Occupied") || this.status.getStatus().equals("Reservation_Scheduled")) {
             throw new RuntimeException("Table cannot be updated while occupied or reserved");
         }
     }

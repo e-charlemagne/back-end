@@ -45,8 +45,8 @@ public class User {
     @Email(message = "Email should be valid")
     private String email;
 
-    @ManyToOne
-    @JoinColumn(name = "role_id", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "role_id")
     private Roles role;
 
     @ManyToMany(mappedBy = "customers")

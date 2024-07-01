@@ -1,6 +1,5 @@
 package com.example.backend.entities.actors;
 
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,4 +17,8 @@ public class Roles {
 
     @Column(unique = true, nullable = false)
     private String roleName;
+
+    public Roles(String roleName) {
+        this.roleName = roleName;
+    }
 }

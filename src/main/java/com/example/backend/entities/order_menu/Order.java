@@ -2,7 +2,6 @@ package com.example.backend.entities.order_menu;
 
 import com.example.backend.entities.actors.User;
 import com.example.backend.entities.table.Table;
-import com.example.backend.entities.table.TableStatus;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
@@ -24,7 +23,6 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @jakarta.persistence.Table(name = "orders")
-
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Order {
     @Id
@@ -45,7 +43,8 @@ public class Order {
     @JoinColumn(name = "table_id")
     private Table table;
 
-    @Enumerated(EnumType.STRING)
+    @ManyToOne
+    @JoinColumn(name = "status_id", nullable = false)
     private OrderStatus status;
 
     @ManyToMany
@@ -67,23 +66,11 @@ public class Order {
     @PrePersist
     public void onPrePersist() {
         if (this.status == null) {
-            this.status = OrderStatus.New;
+            this.status = new OrderStatus();
+            this.status.setStatus("New");
         }
         if (this.table != null) {
-            this.table.setStatus(TableStatus.Now_Occupied);
-
+            this.table.getStatus().setStatus("Now_Occupied");
         }
-
     }
 }
-    /**
-     * Add Taxes_Discounts to the order. My suggestion would be to implement something like
-     * again , EnumClass..? With, enum types of different amount of discounts.
-     * I would like to implement that as ENUM and not as a functional variable due to one reason,
-     * that we would be able to filter and store data more efficiently. Because, anyway,
-     * that would be much harder to track orders with discounts, if that would be implemented as a function..
-     * On the other hand, adding custom enum_type to DB, and create a custom field there - will help us to track this all.
-     *
-     * */
-
-
